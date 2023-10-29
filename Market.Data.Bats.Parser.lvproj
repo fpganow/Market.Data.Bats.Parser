@@ -48,7 +48,6 @@
 					<Item Name="OrderExecutedOld.lvclass" Type="LVClass" URL="../host/pitch/OrderExecuted/OrderExecutedOld.lvclass"/>
 				</Item>
 				<Item Name="PitchMessage.old" Type="Folder">
-					<Item Name="FieldValue.ctl" Type="VI" URL="../host/pitch/PitchMessage.old/FieldValue.ctl"/>
 					<Item Name="get.Bytes.vi" Type="VI" URL="../host/pitch/PitchMessage.old/get.Bytes.vi"/>
 					<Item Name="get.Field.As.Variant.vi" Type="VI" URL="../host/pitch/PitchMessage.old/get.Field.As.Variant.vi"/>
 					<Item Name="get.FieldSpec.by.Name.vi" Type="VI" URL="../host/pitch/PitchMessage.old/get.FieldSpec.by.Name.vi"/>
@@ -1016,7 +1015,6 @@ set_property IOSTANDARD LVCMOS25 [get_ports {Si570Clkn}]
 					<Item Name="Clear Errors.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/Clear Errors.vi"/>
 					<Item Name="lvSimController.dll" Type="Document" URL="/&lt;vilib&gt;/rvi/Simulation/lvSimController.dll"/>
 				</Item>
-				<Item Name="fpganow.common.fpga.lvlib" Type="Library" URL="../../builds/fpganow.common.fpga/fpganow.common.fpga.lvlib"/>
 			</Item>
 			<Item Name="Build Specifications" Type="Build"/>
 		</Item>
