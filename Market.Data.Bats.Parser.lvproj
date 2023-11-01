@@ -129,7 +129,6 @@
 			<Item Name="create.memory.config" Type="VI" URL="../host/create.memory.config"/>
 			<Item Name="create.messages.for.testing.vi" Type="VI" URL="../host/create.messages.for.testing.vi"/>
 			<Item Name="create.messages.from.params.vi" Type="VI" URL="../host/create.messages.from.params.vi"/>
-			<Item Name="hosts.deserialize.orderbook.commands.vi" Type="VI" URL="../host/hosts.deserialize.orderbook.commands.vi"/>
 			<Item Name="Message.Spec.ctl" Type="VI" URL="../host/Message.Spec.ctl"/>
 		</Item>
 		<Item Name="FPGA Target" Type="FPGA Target">
@@ -1015,6 +1014,7 @@ set_property IOSTANDARD LVCMOS25 [get_ports {Si570Clkn}]
 					<Item Name="Clear Errors.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/Clear Errors.vi"/>
 					<Item Name="lvSimController.dll" Type="Document" URL="/&lt;vilib&gt;/rvi/Simulation/lvSimController.dll"/>
 				</Item>
+				<Item Name="fpganow.common.fpga.lvlib" Type="Library" URL="../../builds/fpganow.common/fpganow.common.fpga.lvlib"/>
 			</Item>
 			<Item Name="Build Specifications" Type="Build"/>
 		</Item>
@@ -1074,14 +1074,11 @@ set_property IOSTANDARD LVCMOS25 [get_ports {Si570Clkn}]
 				<Item Name="Wrap Object In Cluster.vi" Type="VI" URL="/&lt;vilib&gt;/Autotestware/Cluster Toolkit/Wrap Object In Cluster.vi"/>
 				<Item Name="XControlSupport.lvlib" Type="Library" URL="/&lt;vilib&gt;/_xctls/XControlSupport.lvlib"/>
 			</Item>
-			<Item Name="fpganow.common.fpga.lvlib" Type="Library" URL="../../builds/fpganow.common.fpga/fpganow.common.fpga.lvlib"/>
-			<Item Name="fpganow.common.fpga.lvlib" Type="Library" URL="../../builds/fpganow.common.host/fpganow.common.fpga.lvlib"/>
-			<Item Name="fpganow.common.host.lvlib" Type="Library" URL="../../builds/fpganow.common.host/fpganow.common.host.lvlib"/>
+			<Item Name="fpganow.common.fpga.lvlib" Type="Library" URL="../../builds/fpganow.common/fpganow.common.fpga.lvlib"/>
+			<Item Name="fpganow.common.host.lvlib" Type="Library" URL="../../builds/fpganow.common/fpganow.common.host.lvlib"/>
 			<Item Name="NiFpgaLv.dll" Type="Document" URL="NiFpgaLv.dll">
 				<Property Name="NI.PreserveRelativePath" Type="Bool">true</Property>
 			</Item>
-			<Item Name="orderbook.command.ctl" Type="VI" URL="../../builds/fpganow.common.host/orderbook.command.ctl"/>
-			<Item Name="orderbook.command.type.ctl" Type="VI" URL="../../builds/fpganow.common.host/orderbook.command.type.ctl"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>
