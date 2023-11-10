@@ -23,10 +23,11 @@
 -- ctrlind_13_Order_Id_U64 : Top level indicator "Order Id (U64)", sync to Clk40, u64
 -- ctrlind_14_Side_U8 : Top level indicator "Side (U8)", sync to Clk40, u8
 -- ctrlind_15_OrderBook_Command_Type : Top level indicator "OrderBook Command.Type", sync to Clk40, enum8
--- ctrlind_16_data : Top level control "data", sync to Clk40, cluster
--- ctrlind_17_data_valid : Top level control "data.valid", sync to Clk40, bool
--- ctrlind_18_reset : Top level control "reset", sync to Clk40, bool
--- ctrlind_19_Ready_for_Udp_Input : Top level indicator "Ready.for.Udp.Input", sync to Clk40, bool
+-- ctrlind_16_data_valid : Top level control "data.valid", sync to Clk40, bool
+-- ctrlind_17_Byte_Enables : Top level control "Byte.Enables", sync to Clk40, array
+-- ctrlind_18_Bytes : Top level control "Bytes", sync to Clk40, array
+-- ctrlind_19_reset : Top level control "reset", sync to Clk40, bool
+-- ctrlind_20_Ready_for_Udp_Input : Top level indicator "Ready.for.Udp.Input", sync to Clk40, bool
 -- Clk40 : Clock "40 MHz Onboard Clock", nominal frequency 40.00 MHz, base clock
 
 library ieee;
@@ -54,10 +55,11 @@ entity NiFpgaIPWrapper_bats_parser_ip is
 			ctrlind_13_Order_Id_U64 : out std_logic_vector(63 downto 0);
 			ctrlind_14_Side_U8 : out std_logic_vector(7 downto 0);
 			ctrlind_15_OrderBook_Command_Type : out std_logic_vector(7 downto 0);
-			ctrlind_16_data : in std_logic_vector(71 downto 0);
-			ctrlind_17_data_valid : in std_logic_vector(0 downto 0);
-			ctrlind_18_reset : in std_logic_vector(0 downto 0);
-			ctrlind_19_Ready_for_Udp_Input : out std_logic_vector(0 downto 0);
+			ctrlind_16_data_valid : in std_logic_vector(0 downto 0);
+			ctrlind_17_Byte_Enables : in std_logic_vector(7 downto 0);
+			ctrlind_18_Bytes : in std_logic_vector(63 downto 0);
+			ctrlind_19_reset : in std_logic_vector(0 downto 0);
+			ctrlind_20_Ready_for_Udp_Input : out std_logic_vector(0 downto 0);
 			Clk40 : in std_logic
 		);
 end NiFpgaIPWrapper_bats_parser_ip;
@@ -86,10 +88,11 @@ architecture vhdl_labview of NiFpgaIPWrapper_bats_parser_ip is
 			ctrlind_13_Order_Id_U64 : out std_logic_vector(63 downto 0);
 			ctrlind_14_Side_U8 : out std_logic_vector(7 downto 0);
 			ctrlind_15_OrderBook_Command_Type : out std_logic_vector(7 downto 0);
-			ctrlind_16_data : in std_logic_vector(71 downto 0);
-			ctrlind_17_data_valid : in std_logic_vector(0 downto 0);
-			ctrlind_18_reset : in std_logic_vector(0 downto 0);
-			ctrlind_19_Ready_for_Udp_Input : out std_logic_vector(0 downto 0);
+			ctrlind_16_data_valid : in std_logic_vector(0 downto 0);
+			ctrlind_17_Byte_Enables : in std_logic_vector(7 downto 0);
+			ctrlind_18_Bytes : in std_logic_vector(63 downto 0);
+			ctrlind_19_reset : in std_logic_vector(0 downto 0);
+			ctrlind_20_Ready_for_Udp_Input : out std_logic_vector(0 downto 0);
 			Clk40 : in std_logic;
 			tDiagramEnableOut : in std_logic
 		);
@@ -118,10 +121,11 @@ begin
 			ctrlind_13_Order_Id_U64 => ctrlind_13_Order_Id_U64,
 			ctrlind_14_Side_U8 => ctrlind_14_Side_U8,
 			ctrlind_15_OrderBook_Command_Type => ctrlind_15_OrderBook_Command_Type,
-			ctrlind_16_data => ctrlind_16_data,
-			ctrlind_17_data_valid => ctrlind_17_data_valid,
-			ctrlind_18_reset => ctrlind_18_reset,
-			ctrlind_19_Ready_for_Udp_Input => ctrlind_19_Ready_for_Udp_Input,
+			ctrlind_16_data_valid => ctrlind_16_data_valid,
+			ctrlind_17_Byte_Enables => ctrlind_17_Byte_Enables,
+			ctrlind_18_Bytes => ctrlind_18_Bytes,
+			ctrlind_19_reset => ctrlind_19_reset,
+			ctrlind_20_Ready_for_Udp_Input => ctrlind_20_Ready_for_Udp_Input,
 			Clk40 => Clk40,
 			tDiagramEnableOut => '1'
 		);
