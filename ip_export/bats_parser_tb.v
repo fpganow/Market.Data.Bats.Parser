@@ -126,6 +126,9 @@ module bats_parser_tb;
         ip_reset_19_in = 0;
         ip_ready_for_orderbook_command_03_in = 1;
         ip_ready_for_debug_00_in = 1;
+        ip_data_valid_16_in = 0;
+        ip_byte_enables_17_in = 8'h0;
+        ip_bytes_18_in = 64'h00000000;
 
         // Reset IP
         ip_reset_in = 1;

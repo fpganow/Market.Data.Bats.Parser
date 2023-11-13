@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="bats_parser_tb_func_synth.wdb" id="1">
+         <top_modules>
+            <top_module name="bats_parser_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="2,669.334 ns"></ZoomStartTime>
+      <ZoomEndTime time="3,303.335 ns"></ZoomEndTime>
+      <Cursor1Time time="2,775.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="290"></NameColumnWidth>
+      <ValueColumnWidth column_width="106"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="30" />
+   <wvobject fp_name="/bats_parser_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_reset_in" type="logic">
+      <obj_property name="ElementShortName">ip_reset_in</obj_property>
+      <obj_property name="ObjectShortName">ip_reset_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_enable_in_in" type="logic">
+      <obj_property name="ElementShortName">ip_enable_in_in</obj_property>
+      <obj_property name="ObjectShortName">ip_enable_in_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_enable_out_out" type="logic">
+      <obj_property name="ElementShortName">ip_enable_out_out</obj_property>
+      <obj_property name="ObjectShortName">ip_enable_out_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_enable_clr_in" type="logic">
+      <obj_property name="ElementShortName">ip_enable_clr_in</obj_property>
+      <obj_property name="ObjectShortName">ip_enable_clr_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_ready_for_debug_00_in" type="array">
+      <obj_property name="ElementShortName">ip_ready_for_debug_00_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_ready_for_debug_00_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_debug_valid_01_out" type="array">
+      <obj_property name="ElementShortName">ip_debug_valid_01_out[0:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_debug_valid_01_out[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_debug_element_02_out" type="array">
+      <obj_property name="ElementShortName">ip_debug_element_02_out[63:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_debug_element_02_out[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_ready_for_orderbook_command_03_in" type="array">
+      <obj_property name="ElementShortName">ip_ready_for_orderbook_command_03_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_ready_for_orderbook_command_03_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_orderbook_command_valid_04_out" type="array">
+      <obj_property name="ElementShortName">ip_orderbook_command_valid_04_out[0:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_orderbook_command_valid_04_out[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_nanoseconds_u_05_out" type="array">
+      <obj_property name="ElementShortName">ip_nanoseconds_u_05_out[63:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_nanoseconds_u_05_out[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_seconds_u_06_out" type="array">
+      <obj_property name="ElementShortName">ip_seconds_u_06_out[63:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_seconds_u_06_out[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_remaining_quantity_u_07_out" type="array">
+      <obj_property name="ElementShortName">ip_remaining_quantity_u_07_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_remaining_quantity_u_07_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_canceled_quantity_u_08_out" type="array">
+      <obj_property name="ElementShortName">ip_canceled_quantity_u_08_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_canceled_quantity_u_08_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_executed_quantity_u_09_out" type="array">
+      <obj_property name="ElementShortName">ip_executed_quantity_u_09_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_executed_quantity_u_09_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_price_u_10_out" type="array">
+      <obj_property name="ElementShortName">ip_price_u_10_out[63:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_price_u_10_out[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_symbol_u_11_out" type="array">
+      <obj_property name="ElementShortName">ip_symbol_u_11_out[63:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_symbol_u_11_out[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_quantity_u_12_out" type="array">
+      <obj_property name="ElementShortName">ip_quantity_u_12_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_quantity_u_12_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_order_id_u_13_out" type="array">
+      <obj_property name="ElementShortName">ip_order_id_u_13_out[63:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_order_id_u_13_out[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_side_u_14_out" type="array">
+      <obj_property name="ElementShortName">ip_side_u_14_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_side_u_14_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_orderbook_command_type_15_out" type="array">
+      <obj_property name="ElementShortName">ip_orderbook_command_type_15_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_orderbook_command_type_15_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_data_valid_16_in" type="array">
+      <obj_property name="ElementShortName">ip_data_valid_16_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_data_valid_16_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_byte_enables_17_in" type="array">
+      <obj_property name="ElementShortName">ip_byte_enables_17_in[7:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_byte_enables_17_in[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_bytes_18_in" type="array">
+      <obj_property name="ElementShortName">ip_bytes_18_in[63:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_bytes_18_in[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_reset_19_in" type="array">
+      <obj_property name="ElementShortName">ip_reset_19_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_reset_19_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/ip_ready_for_udp_input_20_out" type="array">
+      <obj_property name="ElementShortName">ip_ready_for_udp_input_20_out[0:0]</obj_property>
+      <obj_property name="ObjectShortName">ip_ready_for_udp_input_20_out[0:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/fptr" type="array">
+      <obj_property name="ElementShortName">fptr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">fptr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/scan_faults" type="array">
+      <obj_property name="ElementShortName">scan_faults[31:0]</obj_property>
+      <obj_property name="ObjectShortName">scan_faults[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/period" type="array">
+      <obj_property name="ElementShortName">period[31:0]</obj_property>
+      <obj_property name="ObjectShortName">period[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/bats_parser_tb/duty_cycle" type="array">
+      <obj_property name="ElementShortName">duty_cycle[31:0]</obj_property>
+      <obj_property name="ObjectShortName">duty_cycle[31:0]</obj_property>
+   </wvobject>
+</wave_config>
