@@ -57,15 +57,12 @@ def main(argv):
     fin = argv[0]
     print(f'Opening Source File: {fin}')
 
-    #fin = "NiFpgaIPWrapper_bats_parser_ip.vhd"
     if not Path(fin).exists():
         print(f'File {fin} not found')
         sys.exit(1)
 
-#    target_entity = 'NiFpgaIPWrapper_bats_parser_ip'
-
+    print(f'{tab_stop}// AUTO_GENERATED_CODE_START: parse.py')
     vhd_src = Path(fin).read_text()
-    #print(f'vhd_src: {vhd_src}')
 
     target_entity = None
     entity_dict = {}
@@ -153,7 +150,7 @@ def main(argv):
             tail = ''
         print(f'{tab_stop*2}.{val.name}(ip_{key}){tail}')
     print(f'{tab_stop});')
-
+    print(f'{tab_stop}// AUTO_GENERATED_CODE_END: parse.py')
 
 if __name__ == "__main__":
     main(sys.argv[1:])

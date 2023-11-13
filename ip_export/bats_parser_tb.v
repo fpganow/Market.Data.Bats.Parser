@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+//ip_bytes_18_in = 64'h0e0001010100000l;
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -26,7 +27,7 @@ module bats_parser_tb;
     // 20ns = 50 MHz
     // 25ns = 40MHz
     // duration for each bit = 20 * timescale = 20 * 1 ns = 20 ns
-    localparam period = 20;
+    localparam period = 25;
     localparam duty_cycle = period / 2;
 
     reg clk;
@@ -49,6 +50,8 @@ module bats_parser_tb;
     // enable_out: Ignore this for free running IP. Otherwise it is
     //             asserted when the IP has stopped.
     // enable_clr: Assert for one cycle to prepare IP for a single shot.
+    // AUTO_GENERATED CODE: parse.py
+    // Variables for NiFpgaIPWrapper_bats_parser_ip
     reg              ip_reset_in;
     reg              ip_enable_in_in;
     wire             ip_enable_out_out;
@@ -69,11 +72,12 @@ module bats_parser_tb;
     wire   [63:0]    ip_order_id_u_13_out;
     wire   [ 7:0]    ip_side_u_14_out;
     wire   [ 7:0]    ip_orderbook_command_type_15_out;
-    reg    [71:0]    ip_data_16_in;
-    reg    [ 0:0]    ip_data_valid_17_in;
-    reg    [ 0:0]    ip_reset_18_in;
-    wire   [ 0:0]    ip_ready_for_udp_input_19_out;
-    reg              ip_clk40_in;
+    reg    [ 0:0]    ip_data_valid_16_in;
+    reg    [ 7:0]    ip_byte_enables_17_in;
+    reg    [63:0]    ip_bytes_18_in;
+    reg    [ 0:0]    ip_reset_19_in;
+    wire   [ 0:0]    ip_ready_for_udp_input_20_out;
+//    reg              ip_clk40_in;
 
     NiFpgaIPWrapper_bats_parser_ip UUT (
         .reset(ip_reset_in),
@@ -96,33 +100,69 @@ module bats_parser_tb;
         .ctrlind_13_Order_Id_U64(ip_order_id_u_13_out),
         .ctrlind_14_Side_U8(ip_side_u_14_out),
         .ctrlind_15_OrderBook_Command_Type(ip_orderbook_command_type_15_out),
-        .ctrlind_16_data(ip_data_16_in),
-        .ctrlind_17_data_valid(ip_data_valid_17_in),
-        .ctrlind_18_reset(ip_reset_18_in),
-        .ctrlind_19_Ready_for_Udp_Input(ip_ready_for_udp_input_19_out),
-        .Clk40(ip_clk40_in)
+        .ctrlind_16_data_valid(ip_data_valid_16_in),
+        .ctrlind_17_Byte_Enables(ip_byte_enables_17_in),
+        .ctrlind_18_Bytes(ip_bytes_18_in),
+        .ctrlind_19_reset(ip_reset_19_in),
+        .ctrlind_20_Ready_for_Udp_Input(ip_ready_for_udp_input_20_out),
+        .Clk40(clk)
     );
+    // AUTO_GENERATED CODE: parse.py
 
     integer fptr;
     integer scan_faults;
 
     initial
     begin
-        // Set default signal values
+        // Set default control signal values
         ip_reset_in = 0;
-        ip_enable_in_in = 1;
+        ip_enable_in_in = 0;
         ip_enable_clr_in = 0;
-//    wire             ip_enable_out;
-
-        #(clk*2);
-        // All input ports
+        // Set default values
         //   Ready.For.Orderbook.Command
+        //   reset_in
         //   data_in
         //   data_valid
-
-        ip_reset_18_in = 0;
+        ip_reset_19_in = 0;
         ip_ready_for_orderbook_command_03_in = 1;
+        ip_ready_for_debug_00_in = 1;
+
+        // Reset IP
+        ip_reset_in = 1;
+        #(period*50);
+
+        ip_enable_in_in = 1;
+        ip_reset_in = 0;
+        #(period*40);
+
+        // Enable IP
+        ip_enable_in_in = 1;
+        #(period*20);
+
+        // LabVIEW/Code Reset
+        ip_reset_19_in = 1;
+        #(period);
+        
+        ip_reset_19_in = 0;
+        #(period*5);
+
         // Most basic test - Sequenced Unit Header with Time
+        ip_data_valid_16_in = 1;
+        ip_byte_enables_17_in = 8'b11111111;        
+        ip_bytes_18_in = 64'h000000020101000e;
+
+        #(period*1);
+        ip_data_valid_16_in = 1;
+        ip_byte_enables_17_in = 8'b00111111;
+        ip_bytes_18_in = 64'h00000006d2192006;
+
+        #(period*1);
+        ip_data_valid_16_in = 0;
+        ip_byte_enables_17_in = 8'b00000000;
+        ip_bytes_18_in = 64'h0000000000000000;
+
+        wait (ip_orderbook_command_valid_04_out == 1);
+//    reg    [63:0]    ip_bytes_18_in;
         // Sequenced Unit Header
         // Hdr Len  (2) - Including this header
         // Hdr Cnt  (1)
@@ -131,11 +171,8 @@ module bats_parser_tb;
         // 0E00  0101  0100 0000
         // Time -> 34,200 = 9:30 AM
         // 0620  9885  0000  0000
-        // TODO: Break ip_data_16_in up into 2 arrays
-        //       one with data
-        //       one with byte enables
-        ip_data_16_in = 0;
-        ip_data_valid_17_in = 1;
+
+
 //        fptr = $fopen("raw.pitch.dat", "rb");
 //        if(fptr == 0)
 //        begin
