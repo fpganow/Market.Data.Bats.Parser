@@ -29,6 +29,7 @@
 -- ctrlind_19_data_valid : Top level control "data.valid", sync to Clk40, bool
 -- ctrlind_20_Ready_for_Udp_Input : Top level indicator "Ready.for.Udp.Input", sync to Clk40, bool
 -- ctrlind_21_Bytes_echo : Top level indicator "Bytes.echo", sync to Clk40, u64
+-- ctrlind_22_Bytes_Valid : Top level indicator "Bytes.Valid", sync to Clk40, u8
 -- Clk40 : Clock "40 MHz Onboard Clock", nominal frequency 40.00 MHz, base clock
 
 library ieee;
@@ -62,6 +63,7 @@ entity NiFpgaIPWrapper_bats_parser_ip is
 			ctrlind_19_data_valid : in std_logic_vector(0 downto 0);
 			ctrlind_20_Ready_for_Udp_Input : out std_logic_vector(0 downto 0);
 			ctrlind_21_Bytes_echo : out std_logic_vector(63 downto 0);
+			ctrlind_22_Bytes_Valid : out std_logic_vector(7 downto 0);
 			Clk40 : in std_logic
 		);
 end NiFpgaIPWrapper_bats_parser_ip;
@@ -96,6 +98,7 @@ architecture vhdl_labview of NiFpgaIPWrapper_bats_parser_ip is
 			ctrlind_19_data_valid : in std_logic_vector(0 downto 0);
 			ctrlind_20_Ready_for_Udp_Input : out std_logic_vector(0 downto 0);
 			ctrlind_21_Bytes_echo : out std_logic_vector(63 downto 0);
+			ctrlind_22_Bytes_Valid : out std_logic_vector(7 downto 0);
 			Clk40 : in std_logic;
 			tDiagramEnableOut : in std_logic
 		);
@@ -130,6 +133,7 @@ begin
 			ctrlind_19_data_valid => ctrlind_19_data_valid,
 			ctrlind_20_Ready_for_Udp_Input => ctrlind_20_Ready_for_Udp_Input,
 			ctrlind_21_Bytes_echo => ctrlind_21_Bytes_echo,
+			ctrlind_22_Bytes_Valid => ctrlind_22_Bytes_Valid,
 			Clk40 => Clk40,
 			tDiagramEnableOut => '1'
 		);
