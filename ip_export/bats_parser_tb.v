@@ -77,6 +77,7 @@ module bats_parser_tb;
     reg    [63:0]    ip_bytes_18_in;
     reg    [ 0:0]    ip_reset_19_in;
     wire   [ 0:0]    ip_ready_for_udp_input_20_out;
+    wire   [64:0]    ip_echo_out;
 //    reg              ip_clk40_in;
 
     NiFpgaIPWrapper_bats_parser_ip UUT (
@@ -105,6 +106,7 @@ module bats_parser_tb;
         .ctrlind_18_Bytes(ip_bytes_18_in),
         .ctrlind_19_reset(ip_reset_19_in),
         .ctrlind_20_Ready_for_Udp_Input(ip_ready_for_udp_input_20_out),
+        .ctrlind_21_Bytes_echo(ip_echo_out),
         .Clk40(clk)
     );
     // AUTO_GENERATED CODE: parse.py
@@ -153,11 +155,16 @@ module bats_parser_tb;
         ip_data_valid_16_in = 1;
         ip_byte_enables_17_in = 8'b11111111;        
         ip_bytes_18_in = 64'h000000020101000e;
+        //ip_bytes_18_in = 64'h00 00 00 02 01 01 00 0e;
+        //ip_bytes_18_in = 64'h0e00010102000000;
 
         #(period*1);
         ip_data_valid_16_in = 1;
         ip_byte_enables_17_in = 8'b00111111;
         ip_bytes_18_in = 64'h00000006d2192006;
+        //ip_bytes_18_in = 64'h00 00 00 06 d2 19 20 06;
+        //ip_byte_enables_17_in = 8'b11111100;
+        //ip_bytes_18_in = 64'h062019d206000000;
 
         #(period*1);
         ip_data_valid_16_in = 0;
