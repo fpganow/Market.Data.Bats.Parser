@@ -50,66 +50,69 @@ module bats_parser_tb;
     // enable_out: Ignore this for free running IP. Otherwise it is
     //             asserted when the IP has stopped.
     // enable_clr: Assert for one cycle to prepare IP for a single shot.
-    // AUTO_GENERATED CODE: parse.py
+    // AUTO_GENERATED_CODE_START: parse.py ['./NiFpgaIPWrapper_bats_parser_ip.vhd']
+    // Source file: ./NiFpgaIPWrapper_bats_parser_ip.vhd
     // Variables for NiFpgaIPWrapper_bats_parser_ip
-    reg              ip_reset_in;
-    reg              ip_enable_in_in;
-    wire             ip_enable_out_out;
-    reg              ip_enable_clr_in;
-    reg    [ 0:0]    ip_ready_for_debug_00_in;
-    wire   [ 0:0]    ip_debug_valid_01_out;
-    wire   [63:0]    ip_debug_element_02_out;
-    reg    [ 0:0]    ip_ready_for_orderbook_command_03_in;
-    wire   [ 0:0]    ip_orderbook_command_valid_04_out;
-    wire   [63:0]    ip_nanoseconds_u_05_out;
-    wire   [63:0]    ip_seconds_u_06_out;
-    wire   [31:0]    ip_remaining_quantity_u_07_out;
-    wire   [31:0]    ip_canceled_quantity_u_08_out;
-    wire   [31:0]    ip_executed_quantity_u_09_out;
-    wire   [63:0]    ip_price_u_10_out;
-    wire   [63:0]    ip_symbol_u_11_out;
-    wire   [31:0]    ip_quantity_u_12_out;
-    wire   [63:0]    ip_order_id_u_13_out;
-    wire   [ 7:0]    ip_side_u_14_out;
-    wire   [ 7:0]    ip_orderbook_command_type_15_out;
-    reg    [ 0:0]    ip_data_valid_16_in;
-    reg    [ 7:0]    ip_byte_enables_17_in;
-    reg    [63:0]    ip_bytes_18_in;
-    reg    [ 0:0]    ip_reset_19_in;
-    wire   [ 0:0]    ip_ready_for_udp_input_20_out;
-    wire   [64:0]    ip_echo_out;
-//    reg              ip_clk40_in;
+    reg              reset;
+    reg              enable_in;
+    wire             enable_out;
+    reg              enable_clr;
+    reg    [ 0:0]    in_ip_ready_for_debug;
+    wire   [ 0:0]    out_ip_debug_valid;
+    wire   [63:0]    out_ip_debug_element;
+    reg    [ 0:0]    in_ip_ready_for_orderbook_command;
+    wire   [ 0:0]    out_ip_orderbook_command_valid;
+    wire   [63:0]    out_ip_nanoseconds_u64;
+    wire   [63:0]    out_ip_seconds_u64;
+    wire   [31:0]    out_ip_remaining_quantity_u32;
+    wire   [31:0]    out_ip_canceled_quantity_u32;
+    wire   [31:0]    out_ip_executed_quantity_u32;
+    wire   [63:0]    out_ip_price_u64;
+    wire   [63:0]    out_ip_symbol_u64;
+    wire   [31:0]    out_ip_quantity_u32;
+    wire   [63:0]    out_ip_order_id_u64;
+    wire   [ 7:0]    out_ip_side_u8;
+    wire   [ 7:0]    out_ip_orderbook_command_type;
+    reg    [ 0:0]    in_ip_reset;
+    reg    [63:0]    in_ip_bytes;
+    reg    [ 7:0]    in_ip_byte_enables;
+    reg    [ 0:0]    in_ip_data_valid;
+    wire   [ 0:0]    out_ip_ready_for_udp_input;
+    wire   [63:0]    out_ip_bytes_echo;
+    wire   [ 7:0]    out_ip_bytes_valid;
+    reg              clk40;
 
     NiFpgaIPWrapper_bats_parser_ip UUT (
-        .reset(ip_reset_in),
-        .enable_in(ip_enable_in_in),
-        .enable_out(ip_enable_out_out),
-        .enable_clr(ip_enable_clr_in),
-        .ctrlind_00_Ready_For_Debug(ip_ready_for_debug_00_in),
-        .ctrlind_01_Debug_Valid(ip_debug_valid_01_out),
-        .ctrlind_02_Debug_Element(ip_debug_element_02_out),
-        .ctrlind_03_Ready_for_OrderBook_Command(ip_ready_for_orderbook_command_03_in),
-        .ctrlind_04_OrderBook_Command_Valid(ip_orderbook_command_valid_04_out),
-        .ctrlind_05_Nanoseconds_U64(ip_nanoseconds_u_05_out),
-        .ctrlind_06_Seconds_U64(ip_seconds_u_06_out),
-        .ctrlind_07_Remaining_Quantity_U32(ip_remaining_quantity_u_07_out),
-        .ctrlind_08_Canceled_Quantity_U32(ip_canceled_quantity_u_08_out),
-        .ctrlind_09_Executed_Quantity_U32(ip_executed_quantity_u_09_out),
-        .ctrlind_10_Price_U64(ip_price_u_10_out),
-        .ctrlind_11_Symbol_U64(ip_symbol_u_11_out),
-        .ctrlind_12_Quantity_U32(ip_quantity_u_12_out),
-        .ctrlind_13_Order_Id_U64(ip_order_id_u_13_out),
-        .ctrlind_14_Side_U8(ip_side_u_14_out),
-        .ctrlind_15_OrderBook_Command_Type(ip_orderbook_command_type_15_out),
-        .ctrlind_16_data_valid(ip_data_valid_16_in),
-        .ctrlind_17_Byte_Enables(ip_byte_enables_17_in),
-        .ctrlind_18_Bytes(ip_bytes_18_in),
-        .ctrlind_19_reset(ip_reset_19_in),
-        .ctrlind_20_Ready_for_Udp_Input(ip_ready_for_udp_input_20_out),
-        .ctrlind_21_Bytes_echo(ip_echo_out),
-        .Clk40(clk)
+        .reset(reset),
+        .enable_in(enable_in),
+        .enable_out(enable_out),
+        .enable_clr(enable_clr),
+        .ctrlind_00_Ready_For_Debug(in_ip_ready_for_debug),
+        .ctrlind_01_Debug_Valid(out_ip_debug_valid),
+        .ctrlind_02_Debug_Element(out_ip_debug_element),
+        .ctrlind_03_Ready_for_OrderBook_Command(in_ip_ready_for_orderbook_command),
+        .ctrlind_04_OrderBook_Command_Valid(out_ip_orderbook_command_valid),
+        .ctrlind_05_Nanoseconds_U64(out_ip_nanoseconds_u64),
+        .ctrlind_06_Seconds_U64(out_ip_seconds_u64),
+        .ctrlind_07_Remaining_Quantity_U32(out_ip_remaining_quantity_u32),
+        .ctrlind_08_Canceled_Quantity_U32(out_ip_canceled_quantity_u32),
+        .ctrlind_09_Executed_Quantity_U32(out_ip_executed_quantity_u32),
+        .ctrlind_10_Price_U64(out_ip_price_u64),
+        .ctrlind_11_Symbol_U64(out_ip_symbol_u64),
+        .ctrlind_12_Quantity_U32(out_ip_quantity_u32),
+        .ctrlind_13_Order_Id_U64(out_ip_order_id_u64),
+        .ctrlind_14_Side_U8(out_ip_side_u8),
+        .ctrlind_15_OrderBook_Command_Type(out_ip_orderbook_command_type),
+        .ctrlind_16_reset(in_ip_reset),
+        .ctrlind_17_Bytes(in_ip_bytes),
+        .ctrlind_18_Byte_Enables(in_ip_byte_enables),
+        .ctrlind_19_data_valid(in_ip_data_valid),
+        .ctrlind_20_Ready_for_Udp_Input(out_ip_ready_for_udp_input),
+        .ctrlind_21_Bytes_echo(out_ip_bytes_echo),
+        .ctrlind_22_Bytes_Valid(out_ip_bytes_valid),
+        .Clk40(clk40)
     );
-    // AUTO_GENERATED CODE: parse.py
+    // AUTO_GENERATED_CODE_END: parse.py
 
     integer fptr;
     integer scan_faults;
