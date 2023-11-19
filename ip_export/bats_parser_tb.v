@@ -30,14 +30,14 @@ module bats_parser_tb;
     localparam period = 25;
     localparam duty_cycle = period / 2;
 
-    reg clk;
+    reg clk40;
 
     always
     begin
-        clk = 1'b1;
+        clk40 = 1'b1;
         #duty_cycle;
 
-        clk = 1'b0;
+        clk40 = 1'b0;
         #duty_cycle;
     end
 
@@ -80,7 +80,6 @@ module bats_parser_tb;
     wire   [ 0:0]    out_ip_ready_for_udp_input;
     wire   [63:0]    out_ip_bytes_echo;
     wire   [ 7:0]    out_ip_bytes_valid;
-    reg              clk40;
 
     NiFpgaIPWrapper_bats_parser_ip UUT (
         .reset(reset),
@@ -120,86 +119,62 @@ module bats_parser_tb;
     initial
     begin
         // Set default control signal values
-        ip_reset_in = 0;
-        ip_enable_in_in = 0;
-        ip_enable_clr_in = 0;
+        reset = 0;
+        enable_in = 0;
+        enable_clr = 0;
         // Set default values
         //   Ready.For.Orderbook.Command
         //   reset_in
         //   data_in
         //   data_valid
-        ip_reset_19_in = 0;
-        ip_ready_for_orderbook_command_03_in = 1;
-        ip_ready_for_debug_00_in = 1;
-        ip_data_valid_16_in = 0;
-        ip_byte_enables_17_in = 8'h0;
-        ip_bytes_18_in = 64'h00000000;
+        reset = 0;
+        in_ip_ready_for_orderbook_command = 1;
+        in_ip_ready_for_debug = 1;
+        in_ip_data_valid = 0;
+        in_ip_byte_enables = 8'h0;
+        in_ip_bytes = 64'h00000000;
 
         // Reset IP
-        ip_reset_in = 1;
+        reset = 1;
         #(period*50);
 
-        ip_enable_in_in = 1;
-        ip_reset_in = 0;
+        enable_in = 1;
+        reset = 0;
         #(period*40);
 
         // Enable IP
-        ip_enable_in_in = 1;
+        enable_in = 1;
         #(period*20);
 
         // LabVIEW/Code Reset
-        ip_reset_19_in = 1;
+        in_ip_reset = 1;
         #(period);
-        
-        ip_reset_19_in = 0;
+
+        in_ip_reset = 0;
         #(period*5);
 
         // Most basic test - Sequenced Unit Header with Time
-        ip_data_valid_16_in = 1;
-        ip_byte_enables_17_in = 8'b11111111;        
-        ip_bytes_18_in = 64'h000000020101000e;
+        in_ip_data_valid = 1;
+        in_ip_byte_enables = 8'b11111111;        
+        //in_ip_bytes = 64'h000000020101000e;
         //ip_bytes_18_in = 64'h00 00 00 02 01 01 00 0e;
-        //ip_bytes_18_in = 64'h0e00010102000000;
+        in_ip_bytes = 64'h0e00010102000000;
 
         #(period*1);
-        ip_data_valid_16_in = 1;
-        ip_byte_enables_17_in = 8'b00111111;
-        ip_bytes_18_in = 64'h00000006d2192006;
+        in_ip_data_valid = 1;
+        //in_ip_byte_enables = 8'b00111111;
+        //in_ip_bytes = 64'h00000006d2192006;
         //ip_bytes_18_in = 64'h00 00 00 06 d2 19 20 06;
-        //ip_byte_enables_17_in = 8'b11111100;
-        //ip_bytes_18_in = 64'h062019d206000000;
+        in_ip_byte_enables = 8'b11111100;
+        in_ip_bytes = 64'h062019d206000000;
 
         #(period*1);
-        ip_data_valid_16_in = 0;
-        ip_byte_enables_17_in = 8'b00000000;
-        ip_bytes_18_in = 64'h0000000000000000;
+        in_ip_data_valid = 0;
+        in_ip_byte_enables = 8'b00000000;
+        in_ip_bytes = 64'h0000000000000000;
 
-        wait (ip_orderbook_command_valid_04_out == 1);
-//    reg    [63:0]    ip_bytes_18_in;
-        // Sequenced Unit Header
-        // Hdr Len  (2) - Including this header
-        // Hdr Cnt  (1)
-        // Hdr Unit (1)
-        // Hdr Seq  (4)
-        // 0E00  0101  0100 0000
-        // Time -> 34,200 = 9:30 AM
-        // 0620  9885  0000  0000
-
-
-//        fptr = $fopen("raw.pitch.dat", "rb");
-//        if(fptr == 0)
-//        begin
-//            $display("raw.pitch.dat was NULL");
-//            $finish;
-//        end
-//        while (!$feof(fptr))
-//        begin
-//            scan_faults = $fread(bats_data, fptr);
-//            data2_in = bats_data;
-//            data_valid_in = 1'b1;
-//            #period;           
-//        end
-//        $fclose(fptr); // Close file before finish
+        wait (out_ip_orderbook_command_valid == 1);
+        assert (out_ip_seconds_u64 == 64'h000000000006d219);
 
         $finish;
     end
