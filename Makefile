@@ -75,21 +75,15 @@ SRC_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
 
 #dpi: SRC_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
 #dpi: WIN_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
-dpi:
-	@echo -n ""
+ps_dpi:
+	echo -n ""
 	@echo "Synthesizing Project"
 	@echo "Running xvhdl.bat"
 	@echo "------"
-	powershell.exe ${XSC_BAT} ./ip_export/dpi/simple_import/function.c
-	@echo "------"
-	powershell.exe ${XVLOG_BAT} -svlog ./ip_export/dpi/simple_import/file.sv
-	@echo "------"
-	powershell.exe ${XELAB_BAT} work.m -sv_lib dpi --cc gcc  -R
+	powershell.exe ${XSC_BAT} ./ip_export/dpi/simple_import/function.c -v
+	#powershell.exe ${XVLOG_BAT} -svlog ./ip_export/dpi/simple_import/file.sv
+	#powershell.exe ${XELAB_BAT} work.m -sv_lib dpi -R
 
-
-#	powershell.exe ${XSC_BAT} ./ip_export/dpi/simple_import/function.c -v
-#	powershell.exe ${XVLOG_BAT} -svlog ./ip_export/dpi/simple_import/file.sv
-#	powershell.exe ${XELAB_BAT} work.m -sv_lib dpi -R
 
 win_dpi:
 	${VIVADO_WIN}\xsc.bat .\ip_export\dpi\simple_import\function.c -v
@@ -97,7 +91,7 @@ win_dpi:
 	${VIVADO_WIN}\xelab.bat work.m -sv_lib dpi -R
 
 
-linux_dpi:
+lin_dpi:
 	${VIVADO_LIN_XSC} ./ip_export/dpi/simple_import/function.c -v
 	${VIVADO_LIN_XVLOG} -svlog ./ip_export/dpi/simple_import/file.sv
 	${VIVADO_LIN_XELAB} work.m -sv_lib dpi -R
