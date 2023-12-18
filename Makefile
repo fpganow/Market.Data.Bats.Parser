@@ -1,27 +1,50 @@
-
 VIVADO_VER           := 2023.2
 
-VIVADO_LIN_HOME      := "/tools/Xilinx/Vivado/${VIVADO_VER}/"
-VIVADO_LIN_BIN       := "${VIVADO_LIN_HOME}/bin"
-VIVADO_LIN_XSC       := "${VIVADO_LIN_BIN}/xsc"
-VIVADO_LIN_XVHDL     := "${VIVADO_LIN_BIN}/xvhdl"
-VIVADO_LIN_XVLOG     := "${VIVADO_LIN_BIN}/xvlog"
-VIVADO_LIN_XELAB     := "${VIVADO_LIN_BIN}/xelab"
-VIVADO_LIN_XSIM      := "${VIVADO_LIN_BIN}/xsim"
 
-VIVADO_DRIVE         :=  "F"
-VIVADO_HOME          := "${VIVADO_DRIVE}:\\Xilinx\\Vivado\\${VIVADO_VER}"
-VIVADO_BIN           := "${VIVADO_HOME}\\bin"
-VIVADO_SETTINGS_64   := "${VIVADO_HOME}\\settings64.bat"
+ifeq ($(OS),Windows_NT)
+    ARCH=win
+	VIVADO_DRIVE         :=  "F"
+	VIVADO_HOME          := "${VIVADO_DRIVE}:\\Xilinx\\Vivado\\${VIVADO_VER}"
+	VIVADO_BIN           := "${VIVADO_HOME}\\bin"
+	VIVADO_SETTINGS_64   := "${VIVADO_HOME}\\settings64.bat"
 
-VIVADO_WIN  := F:\Xilinx\Vivado\2023.1\bin
+	VIVADO_WIN  := F:\Xilinx\Vivado\2023.1\bin
 
-XSC_BAT := "${VIVADO_HOME}\\bin\\xsc.bat"
-XVHDL_BAT := "${VIVADO_HOME}\\bin\\xvhdl.bat"
-XVLOG_BAT := "${VIVADO_HOME}\\bin\\xvlog.bat"
-XELAB_BAT := "${VIVADO_HOME}\\bin\\xelab.bat"
-XSIM_BAT := "${VIVADO_HOME}\\bin\\xsim.bat"
+	XSC_BAT := "${VIVADO_HOME}\\bin\\xsc.bat"
+	XVHDL_BAT := "${VIVADO_HOME}\\bin\\xvhdl.bat"
+	XVLOG_BAT := "${VIVADO_HOME}\\bin\\xvlog.bat"
+	XELAB_BAT := "${VIVADO_HOME}\\bin\\xelab.bat"
+	XSIM_BAT := "${VIVADO_HOME}\\bin\\xsim.bat"
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        ARCH=linux
+		VIVADO_LIN_HOME      := "/tools/Xilinx/Vivado/${VIVADO_VER}/"
+		VIVADO_LIN_BIN       := "${VIVADO_LIN_HOME}/bin"
+		VIVADO_LIN_XSC       := "${VIVADO_LIN_BIN}/xsc"
+		VIVADO_LIN_XVHDL     := "${VIVADO_LIN_BIN}/xvhdl"
+		VIVADO_LIN_XVLOG     := "${VIVADO_LIN_BIN}/xvlog"
+		VIVADO_LIN_XELAB     := "${VIVADO_LIN_BIN}/xelab"
+		VIVADO_LIN_XSIM      := "${VIVADO_LIN_BIN}/xsim"
+    endif
+endif
 
+
+
+help: info
+	@echo
+	@echo "Help"
+	@echo "  - help_xsc"
+	@echo "  - help_xsc"
+
+info_win:
+	@echo "Windows"
+
+info_linux:
+	@echo "Linux"
+
+info: info_${ARCH}
+	@echo "Detected architecture: ARCH=$(ARCH)"
 
 # 1 - Synthesize
 #  * NiFpgaIPWrapper_bats_parser_ip.vhd
@@ -33,14 +56,36 @@ XSIM_BAT := "${VIVADO_HOME}\\bin\\xsim.bat"
 #@echo '$$WIN_PATH: ${WIN_PATH}'
 #@echo '$$XVHDL_BAT: ${XVHDL_BAT}'
 
-xsc_help:
-	powershell.exe ${XSC_BAT}
+xsc_help_win:
+	powershell.exe ${XSC_BAT} --help
+xsc_help_linux:
+	${VIVADO_LIN_XSC} --help
+xsc_help: xsc_help_${ARCH}
 
-xvlog_help:
-	powershell.exe ${XVLOG_BAT}
+xvhdl_help_win:
+	powershell.exe ${XVLOG_BAT} --help
+xvhdl_help_linux:
+	${VIVADO_LIN_XVLOG} --help
+xvhdl_help: xvhdl_help_${ARCH}
 
-xelab_help:
-	powershell.exe ${XELAB_BAT} 
+xvlog_help_win:
+	powershell.exe ${XVLOG_BAT} --help
+xvlog_help_linux:
+	${VIVADO_LIN_XVLOG} --help
+xvlog_help: xvlog_help_${ARCH}
+
+xelab_help_win:
+	powershell.exe ${XELAB_BAT} --help
+xelab_help_linux:
+	${VIVADO_LIN_XELAB}  --help
+xelab_help: xelab_help_${ARCH}
+
+xsim_help_win:
+	powershell.exe ${XELAB_BAT} --help
+xsim_help_linux:
+	${VIVADO_LIN_XELAB}  --help
+xsim_help: xsim_help_${ARCH}
+
 
 build:
 	@echo -n ""
@@ -50,6 +95,7 @@ build:
 	powershell.exe ${XVHDL_BAT}
 
 clean:
+	@echo "Cleaning"
 	rm -rf xsim.dir
 	rm -f xelab.*
 	rm -f xsc.*
@@ -57,18 +103,13 @@ clean:
 	rm -f xsim.*
 	rm -f xvhdl.*
 	rm -f xvlog.*
+	cd ip_export/tests && rm -rf build
+	cd ip_export/tests && rm -f pysv_pkg.sv
+	cd ip_export/tests && rm -f *.pb
+	cd ip_export/tests && rm -f *.log
+	cd ip_export/tests && rm -f *.jou
+	cd ip_export/tests && rm -rf xsim.dir
 
-help_xsc:
-	powershell.exe ${XSC_BAT}
-
-help_xvlog:
-	powershell.exe ${XVLOG_BAT}
-
-help_xelab:
-	powershell.exe ${XELAB_BAT}
-
-help_xsim:
-	powershell.exe ${XSIM_BAT} --help
 
 SRC_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
 .PHONY: dpi
@@ -90,8 +131,11 @@ win_dpi:
 	${VIVADO_WIN}\xvlog.bat -svlog .\ip_export\dpi\simple_import\file.sv
 	${VIVADO_WIN}\xelab.bat work.m -sv_lib dpi -R
 
-
+# Vivado 2023.2 has python3.8 embedded, so I'll use the same version.
+export PYTHON=python3.8
 lin_dpi:
-	${VIVADO_LIN_XSC} ./ip_export/dpi/simple_import/function.c -v
-	${VIVADO_LIN_XVLOG} -svlog ./ip_export/dpi/simple_import/file.sv
-	${VIVADO_LIN_XELAB} work.m -sv_lib dpi -R
+	@echo "Building pysv python bindings"
+	cd ip_export/tests && ${PYTHON} ./bats_loader.py
+	cd ip_export/tests && ${VIVADO_LIN_XSC} ./dpi_to_py.c -v
+	cd ip_export/tests && ${VIVADO_LIN_XVLOG} -sv -svlog ./parser_tb.sv
+	cd ip_export/tests && ${VIVADO_LIN_XELAB} work.m -sv_lib dpi -sv_lib ./build/libpysv -R
