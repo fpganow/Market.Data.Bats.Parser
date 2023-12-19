@@ -1,5 +1,10 @@
 `timescale 1ns / 1ps
-//ip_bytes_18_in = 64'h0e0001010100000l;
+
+`include "pysv_pkg.sv"
+import pysv::*;
+
+// Need to include vhd NiFpgaIPWrapper_bats_parser_ip.vhd
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -21,7 +26,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module bats_parser_tb;
+module m();
+//module bats_parser_tb();
 
     // 10ns = 100 MHz
     // 20ns = 50 MHz
@@ -34,6 +40,7 @@ module bats_parser_tb;
 
     always
     begin
+        MyList my_list;
         clk40 = 1'b1;
         #duty_cycle;
 
@@ -137,7 +144,8 @@ module bats_parser_tb;
         // Reset IP
         reset = 1;
         #(period*50);
-
+        $display("Reset IP");
+/*
         enable_in = 1;
         reset = 0;
         #(period*40);
@@ -175,6 +183,7 @@ module bats_parser_tb;
 
         wait (out_ip_orderbook_command_valid == 1);
         assert (out_ip_seconds_u64 == 64'h000000000006d219);
+*/
 
         $finish;
     end

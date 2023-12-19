@@ -46,16 +46,6 @@ info_linux:
 info: info_${ARCH}
 	@echo "Detected architecture: ARCH=$(ARCH)"
 
-# 1 - Synthesize
-#  * NiFpgaIPWrapper_bats_parser_ip.vhd
-#  * NiFpgaAG_bats_parser_ip.dcp
-# 2 - Run Post-Simulation Synthesis
-#@echo 'SRC_PATH=${SRC_PATH}'
-#@echo 'XSC_BAT=${XSC_BAT}'
-#@echo 'WIN_PATH=${WIN_PATH}'
-#@echo '$$WIN_PATH: ${WIN_PATH}'
-#@echo '$$XVHDL_BAT: ${XVHDL_BAT}'
-
 xsc_help_win:
 	powershell.exe ${XSC_BAT} --help
 xsc_help_linux:
@@ -103,12 +93,12 @@ clean:
 	rm -f xsim.*
 	rm -f xvhdl.*
 	rm -f xvlog.*
-	cd ip_export/tests && rm -rf build
-	cd ip_export/tests && rm -f pysv_pkg.sv
-	cd ip_export/tests && rm -f *.pb
-	cd ip_export/tests && rm -f *.log
-	cd ip_export/tests && rm -f *.jou
-	cd ip_export/tests && rm -rf xsim.dir
+	cd ip_export && rm -rf build
+	cd ip_export && rm -f pysv_pkg.sv
+	cd ip_export && rm -f *.pb
+	cd ip_export && rm -f *.log
+	cd ip_export && rm -f *.jou
+	cd ip_export && rm -rf xsim.dir
 
 
 SRC_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
@@ -122,9 +112,8 @@ ps_dpi:
 	@echo "Running xvhdl.bat"
 	@echo "------"
 	powershell.exe ${XSC_BAT} ./ip_export/dpi/simple_import/function.c -v
-	#powershell.exe ${XVLOG_BAT} -svlog ./ip_export/dpi/simple_import/file.sv
-	#powershell.exe ${XELAB_BAT} work.m -sv_lib dpi -R
-
+	powershell.exe ${XVLOG_BAT} -svlog ./ip_export/dpi/simple_import/file.sv
+	powershell.exe ${XELAB_BAT} work.m -sv_lib dpi -R
 
 win_dpi:
 	${VIVADO_WIN}\xsc.bat .\ip_export\dpi\simple_import\function.c -v
@@ -139,3 +128,15 @@ lin_dpi:
 	cd ip_export/tests && ${VIVADO_LIN_XSC} ./dpi_to_py.c -v
 	cd ip_export/tests && ${VIVADO_LIN_XVLOG} -sv -svlog ./parser_tb.sv
 	cd ip_export/tests && ${VIVADO_LIN_XELAB} work.m -sv_lib dpi -sv_lib ./build/libpysv -R
+
+
+test_linux:
+	@echo "Building pysv-based test bench (Linux)"
+	cd ip_export && ${PYTHON} ./bats_loader.py
+	#cd ip_export/tests && ${VIVADO_LIN_XSC} ./dpi_to_py.c -v
+	#cd ip_export && ${VIVADO_LIN_XVLOG} -sv -svlog ./parser_tb.sv
+	cd ip_export && ${VIVADO_LIN_XVHDL} ./NiFpgaIPWrapper_bats_parser_ip.vhd
+	cd ip_export && ${VIVADO_LIN_XVLOG} -sv -svlog ./bats_parser_tb.sv
+	cd ip_export && ${VIVADO_LIN_XELAB} work.m -sv_lib ./build/libpysv -R
+
+test: test_${ARCH}
