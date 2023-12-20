@@ -17,15 +17,33 @@ ifeq ($(OS),Windows_NT)
 	XSIM_BAT := "${VIVADO_HOME}\\bin\\xsim.bat"
 else
     UNAME_S := $(shell uname -s)
-    ifeq ($(UNAME_S),Linux)
-        ARCH=linux
-		VIVADO_LIN_HOME      := "/tools/Xilinx/Vivado/${VIVADO_VER}/"
-		VIVADO_LIN_BIN       := "${VIVADO_LIN_HOME}/bin"
-		VIVADO_LIN_XSC       := "${VIVADO_LIN_BIN}/xsc"
-		VIVADO_LIN_XVHDL     := "${VIVADO_LIN_BIN}/xvhdl"
-		VIVADO_LIN_XVLOG     := "${VIVADO_LIN_BIN}/xvlog"
-		VIVADO_LIN_XELAB     := "${VIVADO_LIN_BIN}/xelab"
-		VIVADO_LIN_XSIM      := "${VIVADO_LIN_BIN}/xsim"
+    IS_WSL  := $(shell uname -a | grep -Pzo WSL)
+    ifeq ($(IS_WSL),WSL)
+        ARCH=wsl
+    	VIVADO_DRIVE         :=  "F"
+    	VIVADO_HOME          := "${VIVADO_DRIVE}:\\Xilinx\\Vivado\\${VIVADO_VER}"
+    	VIVADO_BIN           := "${VIVADO_HOME}\\bin"
+    	VIVADO_SETTINGS_64   := "${VIVADO_HOME}\\settings64.bat"
+
+    	VIVADO_WIN  := C:\Xilinx\Vivado\2023.1\bin
+ 
+    	XSC_BAT := "${VIVADO_HOME}\\bin\\xsc.bat"
+    	XVHDL_BAT := "${VIVADO_HOME}\\bin\\xvhdl.bat"
+    	XVLOG_BAT := "${VIVADO_HOME}\\bin\\xvlog.bat"
+    	XELAB_BAT := "${VIVADO_HOME}\\bin\\xelab.bat"
+    	XSIM_BAT := "${VIVADO_HOME}\\bin\\xsim.bat"
+
+    else
+        ifeq ($(UNAME_S),Linux)
+            ARCH=linux
+    		VIVADO_LIN_HOME      := "/tools/Xilinx/Vivado/${VIVADO_VER}/"
+    		VIVADO_LIN_BIN       := "${VIVADO_LIN_HOME}/bin"
+    		VIVADO_LIN_XSC       := "${VIVADO_LIN_BIN}/xsc"
+    		VIVADO_LIN_XVHDL     := "${VIVADO_LIN_BIN}/xvhdl"
+    		VIVADO_LIN_XVLOG     := "${VIVADO_LIN_BIN}/xvlog"
+    		VIVADO_LIN_XELAB     := "${VIVADO_LIN_BIN}/xelab"
+    		VIVADO_LIN_XSIM      := "${VIVADO_LIN_BIN}/xsim"
+        endif
     endif
 endif
 
@@ -129,6 +147,23 @@ lin_dpi:
 	cd ip_export/tests && ${VIVADO_LIN_XVLOG} -sv -svlog ./parser_tb.sv
 	cd ip_export/tests && ${VIVADO_LIN_XELAB} work.m -sv_lib dpi -sv_lib ./build/libpysv -R
 
+install_deps:
+	@echo "Installing pysv using PYTHON=${PYTHON}"
+	powershell.exe ${PYTHON} -m pip install numpy
+
+test_wsl: PYTHON=C:\\Users\\johns\\AppData\\Local\\Programs\\Python\\Python38\\python.exe
+test_wsl: install_deps
+	@echo "Building pysv-based test bench (WSL)"
+	@echo "PYTHON=${PYTHON}"
+	cd ip_export && powershell.exe ${PYTHON} ./bats_loader.py
+	#####powershell.exe ${XSC_BAT} ./ip_export/dpi/simple_import/function.c -v
+	#####powershell.exe ${XVLOG_BAT} -svlog ./ip_export/dpi/simple_import/file.sv
+	#####powershell.exe ${XELAB_BAT} work.m -sv_lib dpi -R
+	#####cd ip_export/tests && powershell.exe ${XSC_BAT} ./dpi_to_py.c -v
+	#####cd ip_export && powershell.exe ${XVLOG_BAT} -sv -svlog ./parser_tb.sv
+	#cd ip_export && powershell.exe ${XVHDL_BAT} ./NiFpgaIPWrapper_bats_parser_ip.vhd
+	#cd ip_export && powershell.exe ${XVLOG_BAT} -sv -svlog ./bats_parser_tb.sv
+	#cd ip_export && powershell.exe ${XELAB_BAT} work.m -sv_lib ./build/libpysv -R
 
 test_linux:
 	@echo "Building pysv-based test bench (Linux)"
