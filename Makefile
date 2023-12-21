@@ -119,7 +119,7 @@ clean:
 	cd ip_export && rm -rf xsim.dir
 
 
-SRC_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
+#SRC_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
 .PHONY: dpi
 
 #dpi: SRC_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
@@ -150,6 +150,11 @@ lin_dpi:
 install_deps:
 	@echo "Installing pysv using PYTHON=${PYTHON}"
 	powershell.exe ${PYTHON} -m pip install numpy
+
+test_win: PYTHON=C:\\\\Users\\\\johns\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python38\\\\python.exe
+test_win:
+	@echo "Building pysv-based test bench (Windows)"
+	cd ip_export && ${PYTHON} ./bats_loader.py
 
 test_wsl: PYTHON=C:\\Users\\johns\\AppData\\Local\\Programs\\Python\\Python38\\python.exe
 test_wsl: install_deps
