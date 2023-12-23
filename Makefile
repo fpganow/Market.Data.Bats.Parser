@@ -71,9 +71,9 @@ xsc_help_linux:
 xsc_help: xsc_help_${ARCH}
 
 xvhdl_help_win:
-	powershell.exe ${XVLOG_BAT} --help
+	powershell.exe ${XVHDL_BAT} --help
 xvhdl_help_linux:
-	${VIVADO_LIN_XVLOG} --help
+	${VIVADO_LIN_XVHDL} --help
 xvhdl_help: xvhdl_help_${ARCH}
 
 xvlog_help_win:
@@ -172,11 +172,29 @@ test_wsl: install_deps
 
 test_linux:
 	@echo "Building pysv-based test bench (Linux)"
-	cd ip_export && ${PYTHON} ./bats_loader.py
-	#cd ip_export/tests && ${VIVADO_LIN_XSC} ./dpi_to_py.c -v
-	#cd ip_export && ${VIVADO_LIN_XVLOG} -sv -svlog ./parser_tb.sv
-	cd ip_export && ${VIVADO_LIN_XVHDL} ./NiFpgaIPWrapper_bats_parser_ip.vhd
+	@echo " - Creating Python bindings"
+	@cd ip_export && ${PYTHON} ./bats_loader.py
+	@echo
+	@echo " - Compiling IP Wrapper"
+	@cd ip_export && ${VIVADO_LIN_XVHDL} ./NiFpgaIPWrapper_bats_parser_ip.vhd
+	@echo
+	@echo " - Compiling SystemVerilog TestBench"
 	cd ip_export && ${VIVADO_LIN_XVLOG} -sv -svlog ./bats_parser_tb.sv
-	cd ip_export && ${VIVADO_LIN_XELAB} work.m -sv_lib ./build/libpysv -R
+	@echo
+	@echo " - Elaborating"
+	cd ip_export && ${VIVADO_LIN_XELAB} -debug all -top bats_parser_tb -sv_lib ./build/libpysv --snapshot bats_parser_tb
+	@echo
+	@echo " - Running Simulation"
+	cd ip_export && ${VIVADO_LIN_XSIM} bats_parser_tb  -autoloadwcfg -runall
+
+gui:
+	@echo
+	@echo " - Displaying waveform"
+	@echo " xsim --gui ./ip_export/bats_parser_tb.wdb"
+
+old_test_linux:
+	#cd ip_export && ${PYTHON} ./bats_loader.py
+	#cd ip_export && ${VIVADO_LIN_XVLOG} -sv -svlog ./bats_parser_tb.sv
+	#cd ip_export && ${VIVADO_LIN_XELAB} work.m -sv_lib ./build/libpysv -R
 
 test: test_${ARCH}

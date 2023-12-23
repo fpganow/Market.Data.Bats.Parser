@@ -26,8 +26,8 @@ import pysv::*;
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module m();
-//module bats_parser_tb();
+//module m();
+module bats_parser_tb();
 
     // 10ns = 100 MHz
     // 20ns = 50 MHz
@@ -145,7 +145,7 @@ module m();
         reset = 1;
         #(period*50);
         $display("Reset IP");
-/*
+
         enable_in = 1;
         reset = 0;
         #(period*40);
@@ -181,6 +181,11 @@ module m();
         in_ip_byte_enables = 8'b00000000;
         in_ip_bytes = 64'h0000000000000000;
 
+        $display("Sent Test time message");
+
+        $display("enable_out: %d", enable_out);
+        #(period*100);
+/*
         wait (out_ip_orderbook_command_valid == 1);
         assert (out_ip_seconds_u64 == 64'h000000000006d219);
 */
