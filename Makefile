@@ -1,4 +1,6 @@
 VIVADO_VER           := 2023.2
+PYTHON_LIN           := "python3.8"
+PYTHON_WIN           := C:\\Users\\johns\\AppData\\Local\\Programs\\Python\\Python38\\python.exe
 
 
 ifeq ($(OS),Windows_NT)
@@ -17,24 +19,25 @@ ifeq ($(OS),Windows_NT)
 	XSIM_BAT := "${VIVADO_HOME}\\bin\\xsim.bat"
 else
     UNAME_S := $(shell uname -s)
-    IS_WSL  := $(shell uname -a | grep -Pzo WSL)
-    ifeq ($(IS_WSL),WSL)
-        ARCH=wsl
-    	VIVADO_DRIVE         :=  "F"
-    	VIVADO_HOME          := "${VIVADO_DRIVE}:\\Xilinx\\Vivado\\${VIVADO_VER}"
-    	VIVADO_BIN           := "${VIVADO_HOME}\\bin"
-    	VIVADO_SETTINGS_64   := "${VIVADO_HOME}\\settings64.bat"
-
-    	VIVADO_WIN  := C:\Xilinx\Vivado\2023.1\bin
- 
-    	XSC_BAT := "${VIVADO_HOME}\\bin\\xsc.bat"
-    	XVHDL_BAT := "${VIVADO_HOME}\\bin\\xvhdl.bat"
-    	XVLOG_BAT := "${VIVADO_HOME}\\bin\\xvlog.bat"
-    	XELAB_BAT := "${VIVADO_HOME}\\bin\\xelab.bat"
-    	XSIM_BAT := "${VIVADO_HOME}\\bin\\xsim.bat"
-
-    else
-        ifeq ($(UNAME_S),Linux)
+#    IS_WSL  := $(shell uname -a | grep -Pzo WSL)
+#    ifeq ($(IS_WSL),WSL)
+#        ARCH=wsl
+#        ARCH=linux
+#		PYTHON=${PYTHON_LIN}
+#    	VIVADO_DRIVE         :=  "F"
+#    	VIVADO_HOME          := "${VIVADO_DRIVE}:\\Xilinx\\Vivado\\${VIVADO_VER}"
+#    	VIVADO_BIN           := "${VIVADO_HOME}\\bin"
+#    	VIVADO_SETTINGS_64   := "${VIVADO_HOME}\\settings64.bat"
+#
+#    	VIVADO_WIN  := C:\Xilinx\Vivado\2023.1\bin
+# 
+#    	XSC_BAT := "${VIVADO_HOME}\\bin\\xsc.bat"
+#    	XVHDL_BAT := "${VIVADO_HOME}\\bin\\xvhdl.bat"
+#    	XVLOG_BAT := "${VIVADO_HOME}\\bin\\xvlog.bat"
+#    	XELAB_BAT := "${VIVADO_HOME}\\bin\\xelab.bat"
+#    	XSIM_BAT := "${VIVADO_HOME}\\bin\\xsim.bat"
+#    else
+#        ifeq ($(UNAME_S),Linux)
             ARCH=linux
     		VIVADO_LIN_HOME      := "/tools/Xilinx/Vivado/${VIVADO_VER}/"
     		VIVADO_LIN_BIN       := "${VIVADO_LIN_HOME}/bin"
@@ -43,8 +46,8 @@ else
     		VIVADO_LIN_XVLOG     := "${VIVADO_LIN_BIN}/xvlog"
     		VIVADO_LIN_XELAB     := "${VIVADO_LIN_BIN}/xelab"
     		VIVADO_LIN_XSIM      := "${VIVADO_LIN_BIN}/xsim"
-        endif
-    endif
+#        endif
+#    endif
 endif
 
 
@@ -147,9 +150,14 @@ lin_dpi:
 	cd ip_export/tests && ${VIVADO_LIN_XVLOG} -sv -svlog ./parser_tb.sv
 	cd ip_export/tests && ${VIVADO_LIN_XELAB} work.m -sv_lib dpi -sv_lib ./build/libpysv -R
 
-install_deps:
-	@echo "Installing pysv using PYTHON=${PYTHON}"
-	powershell.exe ${PYTHON} -m pip install numpy
+install_deps_win:
+	powershell.exe ${PYTHON} -m pip install numpy pysv
+
+install_deps_linux:
+	${PYTHON} -m pip install numpy pysv
+
+install_deps: install_deps_${ARCH}
+	@echo "Installed pysv using PYTHON=${PYTHON}"
 
 test_win: PYTHON=C:\\\\Users\\\\johns\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python38\\\\python.exe
 test_win:
@@ -175,26 +183,23 @@ test_linux:
 	@echo " - Creating Python bindings"
 	@cd ip_export && ${PYTHON} ./bats_loader.py
 	@echo
-	@echo " - Compiling IP Wrapper"
-	@cd ip_export && ${VIVADO_LIN_XVHDL} ./NiFpgaIPWrapper_bats_parser_ip.vhd
-	@echo
-	@echo " - Compiling SystemVerilog TestBench"
-	cd ip_export && ${VIVADO_LIN_XVLOG} -sv -svlog ./bats_parser_tb.sv
-	@echo
-	@echo " - Elaborating"
-	cd ip_export && ${VIVADO_LIN_XELAB} -debug all -top bats_parser_tb -sv_lib ./build/libpysv --snapshot bats_parser_tb
-	@echo
-	@echo " - Running Simulation"
-	cd ip_export && ${VIVADO_LIN_XSIM} bats_parser_tb  -autoloadwcfg -runall
+#	@echo " - Compiling IP Wrapper"
+#	cd ip_export && ${VIVADO_LIN_XVHDL} ./NiFpgaIPWrapper_bats_parser_ip.vhd
+#	@echo
+#	@echo " - Compiling SystemVerilog TestBench"
+#	cd ip_export && ${VIVADO_LIN_XVLOG} -sv -svlog ./bats_parser_tb.sv
+#	@echo
+#	@echo " - Elaborating"
+#	cd ip_export && ${VIVADO_LIN_XELAB} -debug all -top bats_parser_tb -sv_lib ./build/libpysv --snapshot bats_parser_tb
+#	@echo
+#	@echo " - Running Simulation"
+#	cd ip_export && ${VIVADO_LIN_XSIM} bats_parser_tb  -tclbatch xsim_cfg.tcl
+#	cd ip_export && ${VIVADO_LIN_XSIM} --gui bats_parser_tb.wdb
 
+# . /tools/Xilinx/Vivado/2023.2/settings64.sh
 gui:
 	@echo
 	@echo " - Displaying waveform"
 	@echo " xsim --gui ./ip_export/bats_parser_tb.wdb"
-
-old_test_linux:
-	#cd ip_export && ${PYTHON} ./bats_loader.py
-	#cd ip_export && ${VIVADO_LIN_XVLOG} -sv -svlog ./bats_parser_tb.sv
-	#cd ip_export && ${VIVADO_LIN_XELAB} work.m -sv_lib ./build/libpysv -R
 
 test: test_${ARCH}
