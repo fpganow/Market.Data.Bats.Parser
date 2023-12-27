@@ -6,7 +6,6 @@ from pysv import (
     sv
 )
 import sys
-import numpy
 from typing import Any
 
 import pitch
