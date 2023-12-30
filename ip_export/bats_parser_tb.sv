@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
-`include "pysv_pkg.sv"
-import pysv::*;
+//`include "pysv_pkg.sv"
+//import pysv::*;
 
 // Need to include vhd NiFpgaIPWrapper_bats_parser_ip.vhd
 
@@ -40,7 +40,7 @@ module bats_parser_tb();
 
     always
     begin
-        MyList my_list;
+        //MyList my_list;
         clk40 = 1'b1;
         #duty_cycle;
 
@@ -125,6 +125,8 @@ module bats_parser_tb();
 
     initial
     begin
+        //MyList my_list;
+        int i;
         // Set default control signal values
         reset = 0;
         enable_in = 0;
@@ -182,9 +184,34 @@ module bats_parser_tb();
         in_ip_bytes = 64'h0000000000000000;
 
         $display("Sent Test time message");
+        forever begin 
+            $display("enable_out: %d", enable_out);
+            #(period*100);
+        end 
 
-        $display("enable_out: %d", enable_out);
-        #(period*100);
+/*
+        $display("--------------------------------------------------------------------");
+        $display("Testing PYSV");
+        $display("--------------------------------------------------------------------");
+
+        // Test out custom list first
+        my_list = new();
+        my_list.append(100);
+        $display("my_list.get_idx(0) = %d", my_list.get_idx(0));
+
+        // Now get the bytes array
+
+        get_time(34200, my_list);
+
+        // Validate results
+        for (i=0; i<my_list.get_length(); i++)
+        begin
+            $display(" got [%d] = %d", i, my_list.get_idx(i));
+        end
+        $display("--------------------------------------------------------------------");
+        $display("Finished Testing PYSV");
+        $display("--------------------------------------------------------------------");
+// */
 /*
         wait (out_ip_orderbook_command_valid == 1);
         assert (out_ip_seconds_u64 == 64'h000000000006d219);

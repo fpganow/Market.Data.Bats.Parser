@@ -2,7 +2,6 @@ VIVADO_VER           := 2023.2
 PYTHON_LIN           := "python3.8"
 PYTHON_WIN           := C:\\Users\\johns\\AppData\\Local\\Programs\\Python\\Python38\\python.exe
 
-
 ifeq ($(OS),Windows_NT)
     ARCH=win
 	VIVADO_DRIVE         :=  "F"
@@ -19,37 +18,15 @@ ifeq ($(OS),Windows_NT)
 	XSIM_BAT := "${VIVADO_HOME}\\bin\\xsim.bat"
 else
     UNAME_S := $(shell uname -s)
-#    IS_WSL  := $(shell uname -a | grep -Pzo WSL)
-#    ifeq ($(IS_WSL),WSL)
-#        ARCH=wsl
-#        ARCH=linux
-#		PYTHON=${PYTHON_LIN}
-#    	VIVADO_DRIVE         :=  "F"
-#    	VIVADO_HOME          := "${VIVADO_DRIVE}:\\Xilinx\\Vivado\\${VIVADO_VER}"
-#    	VIVADO_BIN           := "${VIVADO_HOME}\\bin"
-#    	VIVADO_SETTINGS_64   := "${VIVADO_HOME}\\settings64.bat"
-#
-#    	VIVADO_WIN  := C:\Xilinx\Vivado\2023.1\bin
-# 
-#    	XSC_BAT := "${VIVADO_HOME}\\bin\\xsc.bat"
-#    	XVHDL_BAT := "${VIVADO_HOME}\\bin\\xvhdl.bat"
-#    	XVLOG_BAT := "${VIVADO_HOME}\\bin\\xvlog.bat"
-#    	XELAB_BAT := "${VIVADO_HOME}\\bin\\xelab.bat"
-#    	XSIM_BAT := "${VIVADO_HOME}\\bin\\xsim.bat"
-#    else
-#        ifeq ($(UNAME_S),Linux)
-            ARCH=linux
-    		VIVADO_LIN_HOME      := "/tools/Xilinx/Vivado/${VIVADO_VER}/"
-    		VIVADO_LIN_BIN       := "${VIVADO_LIN_HOME}/bin"
-    		VIVADO_LIN_XSC       := "${VIVADO_LIN_BIN}/xsc"
-    		VIVADO_LIN_XVHDL     := "${VIVADO_LIN_BIN}/xvhdl"
-    		VIVADO_LIN_XVLOG     := "${VIVADO_LIN_BIN}/xvlog"
-    		VIVADO_LIN_XELAB     := "${VIVADO_LIN_BIN}/xelab"
-    		VIVADO_LIN_XSIM      := "${VIVADO_LIN_BIN}/xsim"
-#        endif
-#    endif
+    ARCH=linux
+    VIVADO_LIN_HOME      := "/tools/Xilinx/Vivado/${VIVADO_VER}/"
+    VIVADO_LIN_BIN       := "${VIVADO_LIN_HOME}/bin"
+    VIVADO_LIN_XSC       := "${VIVADO_LIN_BIN}/xsc"
+    VIVADO_LIN_XVHDL     := "${VIVADO_LIN_BIN}/xvhdl"
+    VIVADO_LIN_XVLOG     := "${VIVADO_LIN_BIN}/xvlog"
+    VIVADO_LIN_XELAB     := "${VIVADO_LIN_BIN}/xelab"
+    VIVADO_LIN_XSIM      := "${VIVADO_LIN_BIN}/xsim"
 endif
-
 
 
 help: info
