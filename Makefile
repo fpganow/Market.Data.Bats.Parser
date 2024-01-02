@@ -32,59 +32,18 @@ endif
 help: info
 	@echo
 	@echo "Help"
-	@echo "  - help_xsc"
-	@echo "  - help_xsc"
+	@echo "  - clean"
+	@echo "  - info"
+	@echo "  - compile"
+	@echo "  - elaborate"
+	@echo "  - simulate"
+	@echo "  - wave"
 
-info_win:
-	@echo "Windows"
-
-info_linux:
-	@echo "Linux"
-
-info: info_${ARCH}
-	@echo "Detected architecture: ARCH=$(ARCH)"
-
-xsc_help_win:
-	powershell.exe ${XSC_BAT} --help
-xsc_help_linux:
-	${VIVADO_LIN_XSC} --help
-xsc_help: xsc_help_${ARCH}
-
-xvhdl_help_win:
-	powershell.exe ${XVHDL_BAT} --help
-xvhdl_help_linux:
-	${VIVADO_LIN_XVHDL} --help
-xvhdl_help: xvhdl_help_${ARCH}
-
-xvlog_help_win:
-	powershell.exe ${XVLOG_BAT} --help
-xvlog_help_linux:
-	${VIVADO_LIN_XVLOG} --help
-xvlog_help: xvlog_help_${ARCH}
-
-xelab_help_win:
-	powershell.exe ${XELAB_BAT} --help
-xelab_help_linux:
-	${VIVADO_LIN_XELAB}  --help
-xelab_help: xelab_help_${ARCH}
-
-xsim_help_win:
-	powershell.exe ${XELAB_BAT} --help
-xsim_help_linux:
-	${VIVADO_LIN_XELAB}  --help
-xsim_help: xsim_help_${ARCH}
-
-
-build:
-	@echo -n ""
-	@echo "Synthesizing Project"
-	@echo "Running xvhdl.bat"
-	@echo ""
-	powershell.exe ${XVHDL_BAT}
 
 clean:
 	@echo "Cleaning"
 	rm -rf xsim.dir
+	rm -f *.log *.jou
 	rm -f xelab.*
 	rm -f xsc.*
 	rm -f xsim_*.*
@@ -96,14 +55,41 @@ clean:
 	cd ip_export && rm -f *.pb
 	cd ip_export && rm -f *.log
 	cd ip_export && rm -f *.jou
+	cd ip_export && rm -f *.wdb
 	cd ip_export && rm -rf xsim.dir
 
+info:
+	@echo "Detected architecture: ${ARCH}"
 
-#SRC_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
-.PHONY: dpi
+# Generate synthesized version manually
+# Then script it out
+export PYTHON=python3.8
+compile:
+	@echo "Compile Step"
+	@echo "  - Creating Python Bindings"
+	@echo "    Using Python=${PYTHON}"
+	cd ip_export && ${PYTHON} ./bats_loader.py
+	@echo
+	#@echo " - Compiling IP Wrapper (Open Checkpoint and synthesize)"
+	#cd ip_export && ${VIVADO_LIN_BIN}/xvhdl ./NiFpgaIPWrapper_bats_parser_ip.vhd
+	@echo " - Compiling Synthesized IP Wrapper"
+	cd ip_export && ${VIVADO_LIN_BIN}/xvlog --incr --relax ./bats_parser_tb_func_synth.v
+	@echo
+	@echo " - Compiling SystemVerilog TestBench"
+	cd ip_export && ${VIVADO_LIN_BIN}/xvlog -sv -svlog ./bats_parser_tb.sv
+	@echo
+	@echo " - Elaborating"
+	cd ip_export && ${VIVADO_LIN_BIN}/xelab --incr -debug all --relax --mt 8 \
+					-L xil_defaultlib -L unisims_ver -L secureip \
+					xil_defaultlib.glbl \
+					-top bats_parser_tb -sv_lib ./build/libpysv --snapshot bats_parser_tb
+#					--snapshot bats_parser_tb_func_synth
+	#@echo
+	#@echo " - Running Simulation"
+	#cd ip_export && ${VIVADO_LIN_XSIM} bats_parser_tb  -tclbatch xsim_cfg.tcl
+#	cd ip_export && ${VIVADO_LIN_XSIM} --gui bats_parser_tb.wdb
 
-#dpi: SRC_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
-#dpi: WIN_PATH 	  := $(shell echo "$(PWD)" | sed 's|^/mnt/||;s|/|\\|g')
+
 ps_dpi:
 	echo -n ""
 	@echo "Synthesizing Project"

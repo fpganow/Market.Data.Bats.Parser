@@ -3,8 +3,7 @@
 `include "pysv_pkg.sv"
 import pysv::*;
 
-module m();
-
+module parser_tb();
 
 initial
 begin

@@ -40,7 +40,6 @@ module bats_parser_tb();
 
     always
     begin
-        //MyList my_list;
         clk40 = 1'b1;
         #duty_cycle;
 
@@ -125,7 +124,7 @@ module bats_parser_tb();
 
     initial
     begin
-        //MyList my_list;
+//        MyList my_list;
         int i;
         // Set default control signal values
         reset = 0;
@@ -212,6 +211,30 @@ module bats_parser_tb();
         $display("Finished Testing PYSV");
         $display("--------------------------------------------------------------------");
 // */
+/*
+        $display("Testing PYSV");
+        // Test out custom list first
+        my_list = new();
+        my_list.append(100);
+        $display("my_list.get_idx(0) = %d", my_list.get_idx(0));
+
+        // Now get the bytes array
+
+        get_time(34200, my_list);
+
+        // Validate results
+        for (i=0; i<my_list.get_length(); i++)
+        begin
+            $display(" got [%d] = %d", i, my_list.get_idx(i));
+        end
+
+        pysv_finalize();
+//*/
+
+        $display("----------------------------------------------------------------");
+        $display("  End of TEST BENCH  ");
+        $display("----------------------------------------------------------------");
+
 /*
         wait (out_ip_orderbook_command_valid == 1);
         assert (out_ip_seconds_u64 == 64'h000000000006d219);
