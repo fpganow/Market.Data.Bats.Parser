@@ -42,8 +42,8 @@ help: info
 
 clean:
 	@echo "Cleaning"
-	rm -rf xsim.dir
 	rm -f *.log *.jou
+	rm -rf xsim.dir
 	rm -f xelab.*
 	rm -f xsc.*
 	rm -f xsim_*.*
@@ -69,20 +69,20 @@ compile:
 	@echo "  - Creating Python Bindings"
 	@echo "    Using Python=${PYTHON}"
 	cd ip_export && ${PYTHON} ./bats_loader.py
-	@echo
+	#@echo
 	#@echo " - Compiling IP Wrapper (Open Checkpoint and synthesize)"
 	#cd ip_export && ${VIVADO_LIN_BIN}/xvhdl ./NiFpgaIPWrapper_bats_parser_ip.vhd
-	@echo " - Compiling Synthesized IP Wrapper"
-	cd ip_export && ${VIVADO_LIN_BIN}/xvlog --incr --relax ./bats_parser_tb_func_synth.v
-	@echo
-	@echo " - Compiling SystemVerilog TestBench"
-	cd ip_export && ${VIVADO_LIN_BIN}/xvlog -sv -svlog ./bats_parser_tb.sv
-	@echo
-	@echo " - Elaborating"
-	cd ip_export && ${VIVADO_LIN_BIN}/xelab --incr -debug all --relax --mt 8 \
-					-L xil_defaultlib -L unisims_ver -L secureip \
-					xil_defaultlib.glbl \
-					-top bats_parser_tb -sv_lib ./build/libpysv --snapshot bats_parser_tb
+	#@echo " - Compiling Synthesized IP Wrapper"
+	#cd ip_export && ${VIVADO_LIN_BIN}/xvlog --incr --relax ./bats_parser_tb_func_synth.v
+	#@echo
+	#@echo " - Compiling SystemVerilog TestBench"
+	#cd ip_export && ${VIVADO_LIN_BIN}/xvlog -sv -svlog ./bats_parser_tb.sv
+	#@echo
+	#@echo " - Elaborating"
+	#cd ip_export && ${VIVADO_LIN_BIN}/xelab --incr -debug all --relax --mt 8 \
+#				-L xil_defaultlib -L unisims_ver -L secureip \
+#				xil_defaultlib.glbl \
+#				-top bats_parser_tb -sv_lib ./build/libpysv --snapshot bats_parser_tb
 #					--snapshot bats_parser_tb_func_synth
 	#@echo
 	#@echo " - Running Simulation"

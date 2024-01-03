@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
-//`include "pysv_pkg.sv"
-//import pysv::*;
+`include "pysv_pkg.sv"
+import pysv::*;
 
 // Need to include vhd NiFpgaIPWrapper_bats_parser_ip.vhd
 
@@ -124,7 +124,7 @@ module bats_parser_tb();
 
     initial
     begin
-//        MyList my_list;
+        MyList my_list;
         int i;
         // Set default control signal values
         reset = 0;
@@ -183,12 +183,10 @@ module bats_parser_tb();
         in_ip_bytes = 64'h0000000000000000;
 
         $display("Sent Test time message");
-        forever begin 
-            $display("enable_out: %d", enable_out);
-            #(period*100);
-        end 
-
-/*
+//        forever begin 
+//            $display("enable_out: %d", enable_out);
+//            #(period*100);
+//        end
         $display("--------------------------------------------------------------------");
         $display("Testing PYSV");
         $display("--------------------------------------------------------------------");
