@@ -43,11 +43,8 @@ help: info
 clean:
 	@echo "Cleaning"
 	rm -f *.log *.jou
-	#rm -rf xsim.dir
 	rm -f xelab.*
 	rm -f xsc.*
-	#rm -f xsim_*.*
-	#rm -f xsim.*
 	rm -f xvhdl.*
 	rm -f xvlog.*
 	cd ip_export && rm -rf build
@@ -83,10 +80,20 @@ simulate: elaborate
 	@echo "  - Simulating"
 	cd ip_export/sim && ./simulate.sh
 
-gui:
+waveform:
 	@echo
 	@echo " - Displaying waveform"
-	@echo " xsim --gui ./ip_export/bats_parser_tb.wdb"
+	@echo " xsim --gui ./ip_export/bats_parser_tb_func_synth.wdb"
+	cd ip_export/sim && xsim --gui ./bats_parser_tb_func_synth.wdb
+
+
+install_py_deps_linux:
+	${PYTHON} -m pip install numpy pysv
+
+install_deps: install_deps_${ARCH}
+	@echo "Installed pysv using PYTHON=${PYTHON}"
+
+# Old manually created compile elaborate simulate commands created without .prj files
 	#@echo
 	#@echo " - Compiling IP Wrapper (Open Checkpoint and synthesize)"
 	#cd ip_export && ${VIVADO_LIN_BIN}/xvhdl ./NiFpgaIPWrapper_bats_parser_ip.vhd
@@ -106,18 +113,10 @@ gui:
 	#@echo " - Running Simulation"
 	#cd ip_export && ${VIVADO_LIN_XSIM} bats_parser_tb  -tclbatch xsim_cfg.tcl
 #	cd ip_export && ${VIVADO_LIN_XSIM} --gui bats_parser_tb.wdb
-
-
-install_py_deps_linux:
-	${PYTHON} -m pip install numpy pysv
-
-install_deps: install_deps_${ARCH}
-	@echo "Installed pysv using PYTHON=${PYTHON}"
-
-test_win: PYTHON=C:\\\\Users\\\\johns\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python38\\\\python.exe
-test_win:
-	@echo "Building pysv-based test bench (Windows)"
-	cd ip_export && ${PYTHON} ./bats_loader.py
-
-
-test: test_${ARCH}
+#
+#test_win: PYTHON=C:\\\\Users\\\\johns\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python38\\\\python.exe
+#test_win:
+#	@echo "Building pysv-based test bench (Windows)"
+#	cd ip_export && ${PYTHON} ./bats_loader.py
+#
+#test: test_${ARCH}
