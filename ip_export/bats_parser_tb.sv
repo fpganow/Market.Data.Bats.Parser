@@ -1,7 +1,9 @@
 `timescale 1ns / 1ps
 
+
 `include "pysv_pkg.sv"
 import pysv::*;
+// */
 
 // Need to include vhd NiFpgaIPWrapper_bats_parser_ip.vhd
 
@@ -187,6 +189,7 @@ module bats_parser_tb();
 //            $display("enable_out: %d", enable_out);
 //            #(period*100);
 //        end
+
         $display("--------------------------------------------------------------------");
         $display("Testing PYSV");
         $display("--------------------------------------------------------------------");
@@ -209,6 +212,7 @@ module bats_parser_tb();
         $display("Finished Testing PYSV");
         $display("--------------------------------------------------------------------");
 // */
+
 /*
         $display("Testing PYSV");
         // Test out custom list first

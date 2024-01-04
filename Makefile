@@ -43,11 +43,11 @@ help: info
 clean:
 	@echo "Cleaning"
 	rm -f *.log *.jou
-	rm -rf xsim.dir
+	#rm -rf xsim.dir
 	rm -f xelab.*
 	rm -f xsc.*
-	rm -f xsim_*.*
-	rm -f xsim.*
+	#rm -f xsim_*.*
+	#rm -f xsim.*
 	rm -f xvhdl.*
 	rm -f xvlog.*
 	cd ip_export && rm -rf build
@@ -57,6 +57,8 @@ clean:
 	cd ip_export && rm -f *.jou
 	cd ip_export && rm -f *.wdb
 	cd ip_export && rm -rf xsim.dir
+	cd ip_export/sim && rm -f *.log *.pb
+	cd ip_export/sim && rm -rf xsim.dir
 
 info:
 	@echo "Detected architecture: ${ARCH}"
@@ -64,11 +66,27 @@ info:
 # Generate synthesized version manually
 # Then script it out
 export PYTHON=python3.8
-compile:
-	@echo "Compile Step"
+py_codegen:
 	@echo "  - Creating Python Bindings"
 	@echo "    Using Python=${PYTHON}"
 	cd ip_export && ${PYTHON} ./bats_loader.py
+
+compile: py_codegen
+	@echo "  - Compiling"
+	cd ip_export/sim && ./compile.sh
+
+elaborate: compile
+	@echo "  - Elaborating"
+	cd ip_export/sim && ./elaborate.sh
+
+simulate: elaborate
+	@echo "  - Simulating"
+	cd ip_export/sim && ./simulate.sh
+
+gui:
+	@echo
+	@echo " - Displaying waveform"
+	@echo " xsim --gui ./ip_export/bats_parser_tb.wdb"
 	#@echo
 	#@echo " - Compiling IP Wrapper (Open Checkpoint and synthesize)"
 	#cd ip_export && ${VIVADO_LIN_BIN}/xvhdl ./NiFpgaIPWrapper_bats_parser_ip.vhd
@@ -90,33 +108,7 @@ compile:
 #	cd ip_export && ${VIVADO_LIN_XSIM} --gui bats_parser_tb.wdb
 
 
-ps_dpi:
-	echo -n ""
-	@echo "Synthesizing Project"
-	@echo "Running xvhdl.bat"
-	@echo "------"
-	powershell.exe ${XSC_BAT} ./ip_export/dpi/simple_import/function.c -v
-	powershell.exe ${XVLOG_BAT} -svlog ./ip_export/dpi/simple_import/file.sv
-	powershell.exe ${XELAB_BAT} work.m -sv_lib dpi -R
-
-win_dpi:
-	${VIVADO_WIN}\xsc.bat .\ip_export\dpi\simple_import\function.c -v
-	${VIVADO_WIN}\xvlog.bat -svlog .\ip_export\dpi\simple_import\file.sv
-	${VIVADO_WIN}\xelab.bat work.m -sv_lib dpi -R
-
-# Vivado 2023.2 has python3.8 embedded, so I'll use the same version.
-export PYTHON=python3.8
-lin_dpi:
-	@echo "Building pysv python bindings"
-	cd ip_export/tests && ${PYTHON} ./bats_loader.py
-	cd ip_export/tests && ${VIVADO_LIN_XSC} ./dpi_to_py.c -v
-	cd ip_export/tests && ${VIVADO_LIN_XVLOG} -sv -svlog ./parser_tb.sv
-	cd ip_export/tests && ${VIVADO_LIN_XELAB} work.m -sv_lib dpi -sv_lib ./build/libpysv -R
-
-install_deps_win:
-	powershell.exe ${PYTHON} -m pip install numpy pysv
-
-install_deps_linux:
+install_py_deps_linux:
 	${PYTHON} -m pip install numpy pysv
 
 install_deps: install_deps_${ARCH}
@@ -127,42 +119,5 @@ test_win:
 	@echo "Building pysv-based test bench (Windows)"
 	cd ip_export && ${PYTHON} ./bats_loader.py
 
-test_wsl: PYTHON=C:\\Users\\johns\\AppData\\Local\\Programs\\Python\\Python38\\python.exe
-test_wsl: install_deps
-	@echo "Building pysv-based test bench (WSL)"
-	@echo "PYTHON=${PYTHON}"
-	cd ip_export && powershell.exe ${PYTHON} ./bats_loader.py
-	#####powershell.exe ${XSC_BAT} ./ip_export/dpi/simple_import/function.c -v
-	#####powershell.exe ${XVLOG_BAT} -svlog ./ip_export/dpi/simple_import/file.sv
-	#####powershell.exe ${XELAB_BAT} work.m -sv_lib dpi -R
-	#####cd ip_export/tests && powershell.exe ${XSC_BAT} ./dpi_to_py.c -v
-	#####cd ip_export && powershell.exe ${XVLOG_BAT} -sv -svlog ./parser_tb.sv
-	#cd ip_export && powershell.exe ${XVHDL_BAT} ./NiFpgaIPWrapper_bats_parser_ip.vhd
-	#cd ip_export && powershell.exe ${XVLOG_BAT} -sv -svlog ./bats_parser_tb.sv
-	#cd ip_export && powershell.exe ${XELAB_BAT} work.m -sv_lib ./build/libpysv -R
-
-test_linux:
-	@echo "Building pysv-based test bench (Linux)"
-	@echo " - Creating Python bindings"
-	@cd ip_export && ${PYTHON} ./bats_loader.py
-	@echo
-#	@echo " - Compiling IP Wrapper"
-#	cd ip_export && ${VIVADO_LIN_XVHDL} ./NiFpgaIPWrapper_bats_parser_ip.vhd
-#	@echo
-#	@echo " - Compiling SystemVerilog TestBench"
-#	cd ip_export && ${VIVADO_LIN_XVLOG} -sv -svlog ./bats_parser_tb.sv
-#	@echo
-#	@echo " - Elaborating"
-#	cd ip_export && ${VIVADO_LIN_XELAB} -debug all -top bats_parser_tb -sv_lib ./build/libpysv --snapshot bats_parser_tb
-#	@echo
-#	@echo " - Running Simulation"
-#	cd ip_export && ${VIVADO_LIN_XSIM} bats_parser_tb  -tclbatch xsim_cfg.tcl
-#	cd ip_export && ${VIVADO_LIN_XSIM} --gui bats_parser_tb.wdb
-
-# . /tools/Xilinx/Vivado/2023.2/settings64.sh
-gui:
-	@echo
-	@echo " - Displaying waveform"
-	@echo " xsim --gui ./ip_export/bats_parser_tb.wdb"
 
 test: test_${ARCH}

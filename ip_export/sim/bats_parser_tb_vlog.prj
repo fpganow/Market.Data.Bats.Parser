@@ -1,0 +1,10 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../bats_parser_tb_func_synth.v" \
+
+sv xil_defaultlib  \
+"../pysv_pkg.sv" \
+"../bats_parser_tb.sv" \
+
+# Do not sort compile order
+nosort
