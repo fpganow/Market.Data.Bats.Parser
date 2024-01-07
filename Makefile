@@ -1,6 +1,8 @@
+SHELL := /bin/bash
+
 VIVADO_VER           := 2023.2
 PYTHON_LIN           := "python3.8"
-PYTHON_WIN           := C:\\Users\\johns\\AppData\\Local\\Programs\\Python\\Python38\\python.exe
+PYTHON_WIN           := C:\\Users\\johns\\AppData\\Local\\Programs\\Python\\Python39\\python.exe
 
 ifeq ($(OS),Windows_NT)
     ARCH=win
@@ -57,8 +59,13 @@ clean:
 	cd ip_export/sim && rm -f *.log *.pb *.jou
 	cd ip_export/sim && rm -rf xsim.dir
 
+#XILINX_HLS=/tools/Xilinx/Vitis_HLS/2023.2
+#XILINX_VIVADO=/tools/Xilinx/Vivado/2023.2
+SRC_XIL=source /tools/Xilinx/Vivado/2023.2/settings64.sh
 info:
 	@echo "Detected architecture: ${ARCH}"
+	@echo " - SHEL = ${SHELL}"
+	${SRC_XIL} && printenv
 
 # Generate synthesized version manually
 # Then script it out
@@ -70,21 +77,21 @@ py_codegen:
 
 compile: py_codegen
 	@echo "  - Compiling"
-	cd ip_export/sim && ./compile.sh
+	${SRC_XIL} && cd ip_export/sim && ./compile.sh
 
 elaborate: compile
 	@echo "  - Elaborating"
-	cd ip_export/sim && ./elaborate.sh
+	${SRC_XIL} && cd ip_export/sim && ./elaborate.sh
 
 simulate: elaborate
 	@echo "  - Simulating"
-	cd ip_export/sim && ./simulate.sh
+	${SRC_XIL} && cd ip_export/sim && ./simulate.sh
 
 waveform:
 	@echo
 	@echo " - Displaying waveform"
 	@echo " xsim --gui ./ip_export/bats_parser_tb_func_synth.wdb"
-	cd ip_export/sim && xsim --gui ./bats_parser_tb_func_synth.wdb
+	${SRC_XIL} && cd ip_export/sim && xsim --gui ./bats_parser_tb_func_synth.wdb
 
 
 install_py_deps_linux:
