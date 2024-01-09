@@ -1,11 +1,7 @@
 `timescale 1ns / 1ps
 
-
 `include "pysv_pkg.sv"
 import pysv::*;
-// */
-
-// Need to include vhd NiFpgaIPWrapper_bats_parser_ip.vhd
 
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -27,8 +23,6 @@ import pysv::*;
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
-//module m();
 module bats_parser_tb();
 
     // 10ns = 100 MHz
@@ -208,7 +202,7 @@ module bats_parser_tb();
         begin
             $display(" got [%d] = %d", i, my_list.get_idx(i));
         end
-        $display("--------------------------------------------------------------------");
+// */       $display("--------------------------------------------------------------------");
         $display("Finished Testing PYSV");
         $display("--------------------------------------------------------------------");
 // */

@@ -95,7 +95,7 @@ waveform:
 
 
 install_py_deps_linux:
-	${PYTHON} -m pip install numpy pysv
+	${PYTHON} -m pip install pysv
 
 install_deps: install_deps_${ARCH}
 	@echo "Installed pysv using PYTHON=${PYTHON}"
