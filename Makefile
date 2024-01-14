@@ -39,7 +39,7 @@ help: info
 	@echo "  - compile"
 	@echo "  - elaborate"
 	@echo "  - simulate"
-	@echo "  - wave"
+	@echo "  - waveform"
 
 
 clean:
