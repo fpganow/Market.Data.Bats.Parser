@@ -91,7 +91,11 @@ waveform:
 	@echo
 	@echo " - Displaying waveform"
 	@echo " xsim --gui ./ip_export/bats_parser_tb_func_synth.wdb"
-	${SRC_XIL} && cd ip_export/sim && xsim --gui ./bats_parser_tb_func_synth.wdb
+	${SRC_XIL} && cd ip_export/sim && \
+		xsim --gui ./bats_parser_tb_func_synth.wdb \
+		--view ./bats_parser_tb_func_synth.wcfg
+
+wave: waveform
 
 # breaks with pysv==0.3.0
 install_py_deps_linux:
