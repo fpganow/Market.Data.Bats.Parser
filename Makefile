@@ -93,9 +93,9 @@ waveform:
 	@echo " xsim --gui ./ip_export/bats_parser_tb_func_synth.wdb"
 	${SRC_XIL} && cd ip_export/sim && xsim --gui ./bats_parser_tb_func_synth.wdb
 
-
+# breaks with pysv==0.3.0
 install_py_deps_linux:
-	${PYTHON} -m pip install pysv
+	${PYTHON} -m pip install pysv==0.2.0
 
 install_deps: install_deps_${ARCH}
 	@echo "Installed pysv using PYTHON=${PYTHON}"
