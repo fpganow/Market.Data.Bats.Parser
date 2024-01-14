@@ -191,18 +191,24 @@ module bats_parser_tb();
         // Test out custom list first
         my_list = new();
         my_list.append(100);
+        my_list.append(200);
+        my_list.append(300);
+        my_list.append(400);
         $display("my_list.get_idx(0) = %d", my_list.get_idx(0));
 
         // Now get the bytes array
 
-        get_time(34200, my_list);
+        i = get_time(34200, my_list);
+        $display("i = %d", i);
 
         // Validate results
         for (i=0; i<my_list.get_length(); i++)
         begin
             $display(" got [%d] = %d", i, my_list.get_idx(i));
         end
-// */       $display("--------------------------------------------------------------------");
+        $display("my_list.get_avg() = %d", my_list.get_avg());
+        pysv_finalize();
+       $display("--------------------------------------------------------------------");
         $display("Finished Testing PYSV");
         $display("--------------------------------------------------------------------");
 // */

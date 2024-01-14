@@ -16,15 +16,18 @@
 #
 # ****************************************************************************
 set -Eeuo pipefail
-# simulate design
+
+# Simulate Design
 echo "xsim bats_parser_tb_func_synth \\"
 echo "    -key {Post-Synthesis:sim_1:Functional:bats_parser_tb} \\"
 echo "    -tclbatch bats_parser_tb.tcl \\"
 echo "    -log simulate.log \\"
-echo "    -onfinish quit"
+echo "    -onfinish quit \\"
+echo "    -onerror quit"
 xsim bats_parser_tb_func_synth \
     -key {Post-Synthesis:sim_1:Functional:bats_parser_tb} \
     -tclbatch bats_parser_tb.tcl \
     -log simulate.log \
-    -onfinish quit
+    -onfinish quit \
+    -onerror quit
 

@@ -33,6 +33,10 @@ class MyList:
         return len(self._data)
 
     @sv()
+    def get_avg(self):
+        return sum(self._data) // self.get_length()
+
+    @sv()
     def from_bytearray(self, in_byte_array):
         self._data = in_byte_array
 
@@ -58,7 +62,7 @@ def get_time(sec_since_midnight: int, out_list: MyList) -> int:
     print('-' * 80)
     print("[python] Generating Time message")
     print('-' * 20)
-    print(f'out_list.get_idx(100): {out_list.get_idx(0)}')
+#    print(f'out_list.get_idx(0): {out_list.get_idx(0)}')
     try:
         parms = {
                 "Time": sec_since_midnight
@@ -72,10 +76,11 @@ def get_time(sec_since_midnight: int, out_list: MyList) -> int:
 
     for i in range(out_list.get_length()):
         print(f'{out_list.get_idx(i)}')
+
     print('-' * 80)
     sys.stdout.flush()
-
     return 0
+
 
 def compile():
     # compile the a shared_lib into build folder
