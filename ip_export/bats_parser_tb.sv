@@ -121,6 +121,7 @@ module bats_parser_tb();
     initial
     begin
         MyList my_list;
+        int ret;
         int i;
         // Set default control signal values
         reset = 0;
@@ -161,17 +162,12 @@ module bats_parser_tb();
         // Most basic test - Sequenced Unit Header with Time
         in_ip_data_valid = 1;
         in_ip_byte_enables = 8'b11111111;        
-        //in_ip_bytes = 64'h000000020101000e;
-        //ip_bytes_18_in = 64'h00 00 00 02 01 01 00 0e;
         in_ip_bytes = 64'h0e00010102000000;
 
         #(period*1);
         in_ip_data_valid = 1;
-        //in_ip_byte_enables = 8'b00111111;
-        //in_ip_bytes = 64'h00000006d2192006;
-        //ip_bytes_18_in = 64'h00 00 00 06 d2 19 20 06;
         in_ip_byte_enables = 8'b11111100;
-        in_ip_bytes = 64'h062019d206000000;
+        in_ip_bytes = 64'h062020d206000000;
 
         #(period*1);
         in_ip_data_valid = 0;
@@ -179,38 +175,70 @@ module bats_parser_tb();
         in_ip_bytes = 64'h0000000000000000;
 
         $display("Sent Test time message");
-//        forever begin 
-//            $display("enable_out: %d", enable_out);
-//            #(period*100);
-//        end
+        wait (out_ip_orderbook_command_valid == 1);
+        $display("out_ip_orderbook_command: %d",
+                        out_ip_orderbook_command_valid);
+        $display("out_ip_seconds_u64: %d (0x%x)",
+                        out_ip_seconds_u64,
+                        out_ip_seconds_u64);
+        $display("out_ip_orderbook_command_type: %d",
+                        out_ip_orderbook_command_type);
 
-        $display("--------------------------------------------------------------------");
-        $display("Testing PYSV");
-        $display("--------------------------------------------------------------------");
+        $display("+=================================================================================+");
+        $display("|  Testing PYSV                                                                   |");
+        $display("+---------------------------------------------------------------------------------+");
 
-        // Test out custom list first
+        // Test #1 - Create Custom List via PYSV
+        $display("  -  Test #1 - Create List via PYSV");
         my_list = new();
         my_list.append(100);
         my_list.append(200);
         my_list.append(300);
         my_list.append(400);
-        $display("my_list.get_idx(0) = %d", my_list.get_idx(0));
+        $display("  -  Length = %0d", my_list.get_length());
+        assert (my_list.get_length() == 4);
+        $display("  -  Bytes = %s", my_list.get_str());
+        assert (my_list.get_str() == "[0x98, 0x85, 0x0, 0x0]", "ERROR was");
+        assert (my_list.get_idx(0) == 100);
+        assert (my_list.get_idx(1) == 200);
+        assert (my_list.get_idx(2) == 300);
+        assert (my_list.get_idx(3) == 400);
+        $display("  *  Passed");
+ 
+        // Test #2 - Create Time Message
+        $display("+---------------------------------------------------------------------------------+");
+        $display("Test #2 - Create Time Message");
+        $display("  -  Time = 34,200");
 
-        // Now get the bytes array
+        ret = get_time(34200, my_list);
+        assert (ret == 0);
+        $display("  -  Return value = %0d", ret);
+        $display("  -  Length = %0d", my_list.get_length());
+        assert (my_list.get_length() == 6);
+        $display("  -  Bytes = %s", my_list.get_str());
+        assert (my_list.get_str() == "[0x6, 0x20, 0x98, 0x85, 0x0, 0x0]");
 
-        i = get_time(34200, my_list);
-        $display("i = %d", i);
+        // Test #3 - Get Sequenced Unit Header and Time message -via python-
+        //           into FPGA
+        //           - Generate Time message
+        //           - Generate Seq Unit Hdr using size of Time message
+        $display("+---------------------------------------------------------------------------------+");
+        $display("Test #3 - Create Seg Unit Header and Time Message together");
+
+        // Wait for result
 
         // Validate results
-        for (i=0; i<my_list.get_length(); i++)
-        begin
-            $display(" got [%d] = %d", i, my_list.get_idx(i));
-        end
-        $display("my_list.get_avg() = %d", my_list.get_avg());
+//        for (i=0; i<my_list.get_length(); i++)
+//        begin
+//            $display(" got [%d] = %d", i, my_list.get_idx(i));
+//        end
+//        $display("my_list.get_avg() = %d", my_list.get_avg());
+
+
         pysv_finalize();
-       $display("--------------------------------------------------------------------");
-        $display("Finished Testing PYSV");
-        $display("--------------------------------------------------------------------");
+        $display("+---------------------------------------------------------------------------------+");
+        $display("|  Finished Testing PYSV                                                          |");
+        $display("+---------------------------------------------------------------------------------+");
 // */
 
 /*

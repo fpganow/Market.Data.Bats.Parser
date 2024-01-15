@@ -32,6 +32,15 @@ class MyList:
     def get_length(self):
         return len(self._data)
 
+    @sv(return_type=DataType.String)
+    def get_str(self):
+        try:
+            res = '[' + ', '.join([f'{str(hex(x))}' for x in self._data]) + ']'
+        except Exception as ex:
+            print(f'Exception in MyList.get_str(...): {ex}')
+            sys.stdout.flush()
+        return res
+
     @sv()
     def get_avg(self):
         return sum(self._data) // self.get_length()
@@ -54,15 +63,14 @@ def test_get_time():
     # THEN
     assert_that(my_list.get_length(), equal_to(6))
 
+def get_seq_unit_hdr():
+    pass
+
 
 @sv(sec_since_midnight=DataType.Int,
     out_list=MyList,
     return_type=DataType.Int)
 def get_time(sec_since_midnight: int, out_list: MyList) -> int:
-    print('-' * 80)
-    print("[python] Generating Time message")
-    print('-' * 20)
-#    print(f'out_list.get_idx(0): {out_list.get_idx(0)}')
     try:
         parms = {
                 "Time": sec_since_midnight
@@ -73,12 +81,6 @@ def get_time(sec_since_midnight: int, out_list: MyList) -> int:
         print(f'EXCEPTION in get_time(): {ex}')
         sys.stdout.flush()
         return 1
-
-    for i in range(out_list.get_length()):
-        print(f'{out_list.get_idx(i)}')
-
-    print('-' * 80)
-    sys.stdout.flush()
     return 0
 
 

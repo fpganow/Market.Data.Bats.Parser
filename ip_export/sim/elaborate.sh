@@ -17,6 +17,12 @@
 # ****************************************************************************
 set -Eeuo pipefail
 # elaborate design
-echo "xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L uvm -L unisims_ver -L secureip --snapshot bats_parser_tb_func_synth xil_defaultlib.bats_parser_tb xil_defaultlib.glbl -log elaborate.log -sv_lib libpysv"
-xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L uvm -L unisims_ver -L secureip --snapshot bats_parser_tb_func_synth xil_defaultlib.bats_parser_tb xil_defaultlib.glbl -log elaborate.log -sv_lib ../build/libpysv
+echo "xelab --incr --debug typical --relax --mt 8 \\"
+echo "      -L xil_defaultlib -L uvm -L unisims_ver -L secureip \\"
+echo "      --snapshot bats_parser_tb_func_synth xil_defaultlib.bats_parser_tb xil_defaultlib.glbl \\"
+echo "      -log elaborate.log -sv_lib libpysv"
+xelab --incr --debug typical --relax --mt 8 \
+      -L xil_defaultlib -L uvm -L unisims_ver -L secureip \
+      --snapshot bats_parser_tb_func_synth xil_defaultlib.bats_parser_tb xil_defaultlib.glbl \
+      -log elaborate.log -sv_lib ../build/libpysv
 
