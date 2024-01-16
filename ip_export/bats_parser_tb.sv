@@ -189,7 +189,7 @@ module bats_parser_tb();
         $display("+---------------------------------------------------------------------------------+");
 
         // Test #1 - Create Custom List via PYSV
-        $display("  -  Test #1 - Create List via PYSV");
+        $display("  Test #1 - Create List via PYSV");
         my_list = new();
         my_list.append(100);
         my_list.append(200);
@@ -197,33 +197,48 @@ module bats_parser_tb();
         my_list.append(400);
         $display("  -  Length = %0d", my_list.get_length());
         assert (my_list.get_length() == 4);
-        $display("  -  Bytes = %s", my_list.get_str());
-        assert (my_list.get_str() == "[0x98, 0x85, 0x0, 0x0]", "ERROR was");
+        $display("  -  Bytes = %s", my_list.to_str(0));
+        assert (my_list.to_str(0) == "[0x64 0xC8 0x12C 0x190]") else $error("Assertion failed %s", my_list.to_str(0));
         assert (my_list.get_idx(0) == 100);
         assert (my_list.get_idx(1) == 200);
         assert (my_list.get_idx(2) == 300);
         assert (my_list.get_idx(3) == 400);
         $display("  *  Passed");
- 
-        // Test #2 - Create Time Message
+
+        // Test #2 - Create List, Append and Prepend to it
         $display("+---------------------------------------------------------------------------------+");
-        $display("Test #2 - Create Time Message");
-        $display("  -  Time = 34,200");
-
-        ret = get_time(34200, my_list);
-        assert (ret == 0);
-        $display("  -  Return value = %0d", ret);
-        $display("  -  Length = %0d", my_list.get_length());
+        $display("  Test #2 - Create List, Append and Prepend to it");
+        my_list = new();
+        $display("  - Generating and appending 1st Time message");
+        ret = get_time(34200, my_list, 0);
+        $display("  - Length = %0d", my_list.get_length());
         assert (my_list.get_length() == 6);
-        $display("  -  Bytes = %s", my_list.get_str());
-        assert (my_list.get_str() == "[0x6, 0x20, 0x98, 0x85, 0x0, 0x0]");
+        assert (my_list.to_str(0) == "[0x06 0x20 0x98 0x85 0x00 0x00]") else $error("Assertion failed %s", my_list.to_str(0));
+        $display("  - Generating and prepending 2nd Time message");
+        ret = get_time(34201, my_list, 1);
+        assert (my_list.to_str(0) == "[0x06 0x20 0x99 0x85 0x00 0x00 0x06 0x20 0x98 0x85 0x00 0x00]") else $error("Assertion failed %s", my_list.to_str(0));
+        $display("  *  Passed");
 
-        // Test #3 - Get Sequenced Unit Header and Time message -via python-
+        // Test #3 - Create Time Message and prepend appropriate Seq Unit Header
+        $display("+---------------------------------------------------------------------------------+");
+        $display("  Test #3 - Create Time Message and prepend appropriate Seq Unit Header");
+        $display("  -  Time = 35,199");
+        my_list = new();
+        ret = get_time(35199, my_list, 0);
+
+//        assert (ret == 0);
+//        $display("  -  Return value = %0d", ret);
+//        $display("  -  Length = %0d", my_list.get_length());
+//        assert (my_list.get_length() == 6);
+//        $display("  -  Bytes = %s", my_list.to_str(0));
+//        assert (my_list.to_str(0) == "[0x6, 0x20, 0x98, 0x85, 0x0, 0x0]");
+//
+        // Test # - Get Sequenced Unit Header and Time message -via python-
         //           into FPGA
         //           - Generate Time message
         //           - Generate Seq Unit Hdr using size of Time message
-        $display("+---------------------------------------------------------------------------------+");
-        $display("Test #3 - Create Seg Unit Header and Time Message together");
+        //$display("+---------------------------------------------------------------------------------+");
+        //$display("Test #3 - Create Seg Unit Header and Time Message together");
 
         // Wait for result
 
