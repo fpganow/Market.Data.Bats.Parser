@@ -225,6 +225,8 @@ module bats_parser_tb();
         $display("  -  Time = 35,199");
         my_list = new();
         ret = get_time(35199, my_list, 0);
+        assert (my_list.get_length() == 6);
+        assert (my_list.to_str(0) == "[0x06 0x20 0x7F 0x89 0x00 0x00]") else $error("Assertion failed %s", my_list.to_str(0));
 
 //        assert (ret == 0);
 //        $display("  -  Return value = %0d", ret);

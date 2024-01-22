@@ -68,7 +68,9 @@ class MyList(object):
     out_list=MyList,
     prepend=DataType.Bit,
     return_type=DataType.Int)
-def get_time(sec_since_midnight: int, out_list: MyList, prepend: bool = False) -> int:
+def get_time(sec_since_midnight: int,
+             out_list: MyList,
+             prepend: bool = False) -> int:
     try:
         parms = {
                 "Time": sec_since_midnight
