@@ -89,8 +89,25 @@ def get_time(sec_since_midnight: int,
 
 
 @sv()
-def get_seq_unit_hdr():
-    pass
+def get_seq_unit_hdr(hdr_seq: int, hdr_count: int, msgs_array: MyList) -> bool:
+    """
+    Will call pitch.get_seq_unit_hdr with a parameters dictionary (JSON)
+    and with a list representing the raw bytes of all messages to be included
+    in the Sequenced Unit Header.  Parameters should have the following format:
+        hdr_seq
+        hdr_count
+        msgs_array
+    """
+    parms = {
+        "HdrSeq": hdr_seq,
+        "HdrCount": hdr_count
+    }
+
+    # copy msgs_array to temp_array
+    final_array = pitch.get_seq_unit_hdr(json.dumps(parms),
+                           msgs_array=temp_array)
+    # Replace all elements of msgs_array with final_array
+
 
 ##############################################################################
 # PYSV Related functions
