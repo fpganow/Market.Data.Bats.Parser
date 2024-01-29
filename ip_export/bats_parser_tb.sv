@@ -216,7 +216,8 @@ module bats_parser_tb();
         assert (my_list.to_str(0) == "[0x06 0x20 0x98 0x85 0x00 0x00]") else $error("Assertion failed %s", my_list.to_str(0));
         $display("  - Generating and prepending 2nd Time message");
         ret = get_time(34201, my_list, 1);
-        assert (my_list.to_str(0) == "[0x06 0x20 0x99 0x85 0x00 0x00 0x06 0x20 0x98 0x85 0x00 0x00]") else $error("Assertion failed %s", my_list.to_str(0));
+        assert (my_list.to_str(0) == "[0x06 0x20 0x99 0x85 0x00 0x00 0x06 0x20 0x98 0x85 0x00 0x00]") else 
+            $error("Assertion failed %s", my_list.to_str(0));
         $display("  *  Passed");
 
         // Test #3 - Create Time Message and prepend appropriate Seq Unit Header
@@ -226,8 +227,18 @@ module bats_parser_tb();
         my_list = new();
         ret = get_time(35199, my_list, 0);
         assert (my_list.get_length() == 6);
-        assert (my_list.to_str(0) == "[0x06 0x20 0x7F 0x89 0x00 0x00]") else $error("Assertion failed %s", my_list.to_str(0));
+        assert (my_list.to_str(0) == "[0x06 0x20 0x7F 0x89 0x00 0x00]") else
+            $error("Invalid bytes for Time message: %s", my_list.to_str(0));
 
+        ret = get_seq_unit_hdr(1, 1, my_list);
+        assert (ret == 0) else $display("Bad exit code");
+        assert (my_list.get_length() == 14) else $display("Bad length, was %d", my_list.get_length());
+        assert (my_list.to_str(0) == "[0x0E 0x00 0x02 0x01 0x01 0x00 0x00 0x00 0x06 0x20 0x7F 0x89 0x00 0x00]") else 
+            $error("Invalid bytes for Sequenced Unit Header, %s", my_list.to_str(0));
+
+        // Test #3 - Create Time Message and prepend appropriate Seq Unit Header
+        $display("+---------------------------------------------------------------------------------+");
+//        $display("  Test #3 - Create Time Message and prepend appropriate Seq Unit Header");
 //        assert (ret == 0);
 //        $display("  -  Return value = %0d", ret);
 //        $display("  -  Length = %0d", my_list.get_length());

@@ -40,6 +40,10 @@ class MyList(object):
         self._data = in_list + self._data[:]
 
     @sv()
+    def replace_list(self, in_py_list):
+        self._data = in_py_list
+
+    @sv()
     def get_length(self):
         return len(self._data)
 
@@ -64,6 +68,8 @@ class MyList(object):
 ##############################################################################
 # Wrappers around pitch module functions
 ##############################################################################
+# TODO: Add wrapper functions for remaining message types:
+#  - AddOrder
 @sv(sec_since_midnight=DataType.Int,
     out_list=MyList,
     prepend=DataType.Bit,
@@ -80,15 +86,17 @@ def get_time(sec_since_midnight: int,
             out_list.prepend_list(out_a)
         else:
             out_list.append_list(out_a)
-        #out_list.from_bytearray(out_a)
     except Exception as ex:
-        print(f'EXCEPTION in get_time(): {ex}')
+        print(f'EXCEPTION in pitch.get_time(): {ex}')
         sys.stdout.flush()
         return 1
     return 0
 
 
-@sv()
+@sv(hdr_seq=DataType.Int,
+    hdr_count=DataType.Int,
+    msgs_array=MyList,
+    return_type=DataType.Int)
 def get_seq_unit_hdr(hdr_seq: int, hdr_count: int, msgs_array: MyList) -> bool:
     """
     Will call pitch.get_seq_unit_hdr with a parameters dictionary (JSON)
@@ -98,15 +106,23 @@ def get_seq_unit_hdr(hdr_seq: int, hdr_count: int, msgs_array: MyList) -> bool:
         hdr_count
         msgs_array
     """
-    parms = {
-        "HdrSeq": hdr_seq,
-        "HdrCount": hdr_count
-    }
+    try:
+        parms = {
+            "HdrSeq": hdr_seq,
+            "HdrCount": hdr_count
+        }
 
-    # copy msgs_array to temp_array
-    final_array = pitch.get_seq_unit_hdr(json.dumps(parms),
-                           msgs_array=temp_array)
-    # Replace all elements of msgs_array with final_array
+        # copy msgs_array to temp_array
+        temp_array = msgs_array._data
+        seq_unit_hdr_arr = pitch.get_seq_unit_hdr(json.dumps(parms),
+                                        msgs_array=temp_array)
+        msgs_array.replace_list(seq_unit_hdr_arr)
+    except Exception as ex:
+        print(f'EXCEPTION in pitch.get_seq_unit_hdr(): {ex}')
+        sys.stdout.flush()
+        return 1
+
+    return 0
 
 
 ##############################################################################
