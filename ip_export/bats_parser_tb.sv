@@ -233,15 +233,19 @@ module bats_parser_tb();
         ret = get_seq_unit_hdr(1, 1, my_list);
         assert (ret == 0) else $display("Bad exit code");
         assert (my_list.get_length() == 14) else 
-            $display("Bad length, was %d", my_list.get_length());
+            $error("Bad length, was %d", my_list.get_length());
         assert (my_list.to_str(0) == "[0x0E 0x00 0x02 0x01 0x01 0x00 0x00 0x00 0x06 0x20 0x7F 0x89 0x00 0x00]") else 
             $error("Invalid bytes for Sequenced Unit Header, %s", my_list.to_str(0));
         // TODO: How can systemverilog know if a previous assertion failed and make this 'passed' mean something?
+            // -? External library such as VUnit? https://vunit.github.io/user_guide.html
         $display("  *  Passed");
 
         // Test #4 - Use SeqUnitHdr with single Time Message, pass through BATS.Parser IP
         $display("+---------------------------------------------------------------------------------+");
-//        $display("  Test #3 - Create Time Message and prepend appropriate Seq Unit Header");
+        $display("  Test #4 - Create SeqUnitHdr with single Time Message, pass through BATS.Parser IP");
+        //in_ip_bytes = 64'h0e00010102000000;
+        //in_ip_bytes = 64'h062020d206000000;
+
 //        assert (ret == 0);
 //        $display("  -  Return value = %0d", ret);
 //        $display("  -  Length = %0d", my_list.get_length());

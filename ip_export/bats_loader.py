@@ -1,4 +1,5 @@
 import json
+import math
 from pysv import (
     DataType,
     compile_lib,
@@ -6,7 +7,7 @@ from pysv import (
     sv
 )
 import sys
-from typing import Any
+from typing import Any, List
 
 import pitch
 
@@ -46,6 +47,60 @@ class MyList(object):
     @sv()
     def get_length(self):
         return len(self._data)
+
+    @sv()
+    def get_word(self, index):
+        list_len = len(self._data)
+        remaining_bytes = list_len
+        if remaining_bytes == 0:
+            return 0x0
+        return 1
+#        # Select word
+#        num_words = list_len // 8
+#        last_word = list_len % 8
+#        start_idx = math.floor(index * 8)
+#
+#        remaining_bytes = 8
+#        if start_idx + 8 > list_len:
+#            remaining_bytes = list_len - start_idx
+#
+#        num_zeros = 0
+#        # 1 to 7 length
+#        if remaining_bytes < 8:
+#            # size   |   needs 0s
+#            needs_bytes = 8 - remaining_bytes
+#            bytes_to_cut = remaining_bytes
+#            num_zeros = needs_bytes
+#        else:
+#            needs_bytes = 0
+#            bytes_to_cut = 8
+#
+#        print(f'start_idx: {start_idx}')
+#        remaining_bytes -= bytes_to_cut
+#        slice = [bytes_to_cut:]
+#        final_word = 0
+#
+#        while len(slice) > 0:
+#            final_word = (final_word << 8) | slice[0]
+#            slice = slice[1:]
+#            #print(f'final_word: {hex(final_word)}')
+#            #print(f'slice: {[hex(x) for x in slice]}')
+#            #print(f'len(slice): {len(slice)}')
+#
+#        # Add padding
+#        for i in range(num_zeros):
+#            final_word = (final_word << 8) | 0
+#
+#        print(f'returning: {hex(final_word)}')
+#        return final_word
+
+    @sv()
+    def from_array(self, in_list):
+        self._data = in_list
+
+    @sv()
+    def to_array(self) -> List[int]:
+        return self._data
 
     @sv(no_x=DataType.Int,
             return_type=DataType.String)
