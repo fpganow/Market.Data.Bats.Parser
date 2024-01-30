@@ -82,6 +82,7 @@ module bats_parser_tb();
     wire   [ 0:0]    out_ip_ready_for_udp_input;
     wire   [63:0]    out_ip_bytes_echo;
     wire   [ 7:0]    out_ip_bytes_valid;
+    reg    [63:0]    word;
 
     NiFpgaIPWrapper_bats_parser_ip UUT (
         .reset(reset),
@@ -122,6 +123,7 @@ module bats_parser_tb();
     begin
         MyList my_list;
         int ret;
+        int i_word;
         int i;
         // Set default control signal values
         reset = 0;
@@ -243,13 +245,19 @@ module bats_parser_tb();
         // Test #4 - Use SeqUnitHdr with single Time Message, pass through BATS.Parser IP
         $display("+---------------------------------------------------------------------------------+");
         $display("  Test #4 - Create SeqUnitHdr with single Time Message, pass through BATS.Parser IP");
+        my_list = new();
+        ret = get_time(35199, my_list, 0);
+        ret = get_seq_unit_hdr(1, 1, my_list);
+        assert (ret == 0);
+        $display("  -  Return value = %0d", ret);
+        assert (my_list.get_length() == 14);
+        $display("  -  Length = %0d", my_list.get_length());
+
+        i_word = my_list.get_word(0);
+        $display("  -  word[0] = %0d", i_word);
         //in_ip_bytes = 64'h0e00010102000000;
         //in_ip_bytes = 64'h062020d206000000;
 
-//        assert (ret == 0);
-//        $display("  -  Return value = %0d", ret);
-//        $display("  -  Length = %0d", my_list.get_length());
-//        assert (my_list.get_length() == 6);
 //        $display("  -  Bytes = %s", my_list.to_str(0));
 //        assert (my_list.to_str(0) == "[0x6, 0x20, 0x98, 0x85, 0x0, 0x0]");
 //
@@ -269,32 +277,11 @@ module bats_parser_tb();
 //        end
 //        $display("my_list.get_avg() = %d", my_list.get_avg());
 
-
         pysv_finalize();
         $display("+---------------------------------------------------------------------------------+");
         $display("|  Finished Testing PYSV                                                          |");
         $display("+---------------------------------------------------------------------------------+");
 // */
-
-/*
-        $display("Testing PYSV");
-        // Test out custom list first
-        my_list = new();
-        my_list.append(100);
-        $display("my_list.get_idx(0) = %d", my_list.get_idx(0));
-
-        // Now get the bytes array
-
-        get_time(34200, my_list);
-
-        // Validate results
-        for (i=0; i<my_list.get_length(); i++)
-        begin
-            $display(" got [%d] = %d", i, my_list.get_idx(i));
-        end
-
-        pysv_finalize();
-//*/
 
         $display("----------------------------------------------------------------");
         $display("  End of TEST BENCH  ");

@@ -56,23 +56,30 @@ class MyList(object):
     def is_aligned(self):
         return (len(self._data) % 8 == 0)
 
-    @sv()
+    @sv(index=DataType.Int,
+        return_type=DataType.Int)
     def get_word(self, index):
-        data_to_copy = self._data.copy()
-
-        start_idx = index * 8
-        stop_idx = start_idx + 8
-        if start_idx + 8 > len(data_to_copy):
-            stop_idx = len(data_to_copy)
-
         final_word = 0
-        for i in range(start_idx, stop_idx):
-            final_word = (final_word << 8) | data_to_copy[i]
+        try:
+            return 99
+            data_to_copy = self._data.copy()
 
-        num_zeros = 8 - (stop_idx - start_idx)
-        # Add padding
-        for i in range(num_zeros):
-            final_word = (final_word << 8) | 0
+            start_idx = index * 8
+            stop_idx = start_idx + 8
+            if start_idx + 8 > len(data_to_copy):
+                stop_idx = len(data_to_copy)
+
+            for i in range(start_idx, stop_idx):
+                final_word = (final_word << 8) | data_to_copy[i]
+
+            num_zeros = 8 - (stop_idx - start_idx)
+            # Add padding
+            for i in range(num_zeros):
+                final_word = (final_word << 8) | 0
+
+        except Exception as EX:
+            print(f'Exception in MyList.get_str(...): {ex}')
+            sys.stdout.flush()
 
         return final_word
 
@@ -80,8 +87,8 @@ class MyList(object):
     def from_array(self, in_list):
         self._data = in_list
 
-    @sv()
-    def to_array(self) -> List[int]:
+    @sv(return_type=DataType.Int)
+    def to_array(self) -> int:
         return self._data
 
     @sv(no_x=DataType.Int,
