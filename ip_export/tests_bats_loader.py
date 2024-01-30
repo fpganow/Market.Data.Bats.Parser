@@ -15,6 +15,7 @@ class TestMyList(TestCase):
         # THEN
         assert_that(to_str, equal_to("[]"))
 
+
     def test_to_str_empty(self):
         # GIVEN
         my_list = MyList()
@@ -24,6 +25,7 @@ class TestMyList(TestCase):
 
         # THEN
         assert_that(to_str, equal_to("[]"))
+
 
     def test_to_str_1_element(self):
         # GIVEN
@@ -35,6 +37,7 @@ class TestMyList(TestCase):
 
         # THEN
         assert_that(to_str, equal_to("[0x64]"))
+
 
     def test_to_str_leading_zeroes(self):
         # GIVEN
@@ -49,6 +52,7 @@ class TestMyList(TestCase):
             to_str, equal_to("""[0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09]""")
         )
 
+
     def test_append_and_prepend(self):
         # GIVEN
         my_list = MyList()
@@ -61,19 +65,134 @@ class TestMyList(TestCase):
         # THEN
         assert_that(my_list.to_str(no_x=True), equal_to("[01 02 03 04 05 06 07 08 09]"))
 
-    def test_get_word_below_8(self):
+
+    def test_get_num_words_len_0(self):
         # GIVEN
         my_list = MyList()
-        my_list.append_list([0xab, 0xcd, 0xef, 0x19])
+        my_list.append_list([])
 
         # WHEN
-        word = my_list.get_word(0)
-        num_words = my_list.get_num_words()
+        my_list_len = my_list.get_num_words()
+        is_aligned = my_list.is_aligned()
 
         # THEN
-        print(f'word: {hex(word)}')
-        print(f'num_words: {num_words}')
-        assert_that(word, equal_to(0xabcdef1900000000))
+        assert_that(my_list_len, equal_to(0))
+        assert_that(is_aligned, equal_to(True))
+
+
+    def test_get_num_words_len_1(self):
+        # GIVEN
+        my_list = MyList()
+        my_list.append_list([0x1])
+
+        # WHEN
+        my_list_len = my_list.get_num_words()
+        is_aligned = my_list.is_aligned()
+        my_word = my_list.get_word(0)
+
+        # THEN
+        assert_that(my_list_len, equal_to(1))
+        assert_that(is_aligned, equal_to(False))
+        assert_that(my_word, equal_to(0x0100_0000_0000_0000))
+
+
+    def test_get_num_words_len_7(self):
+        # GIVEN
+        my_list = MyList()
+        my_list.append_list([0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7])
+
+        # WHEN
+        my_list_len = my_list.get_num_words()
+        is_aligned = my_list.is_aligned()
+        my_word = my_list.get_word(0)
+
+        # THEN
+        assert_that(my_list_len, equal_to(1))
+        assert_that(is_aligned, equal_to(False))
+        assert_that(my_word, equal_to(0x0102_0304_0506_0700))
+
+
+    def test_get_num_words_len_8(self):
+        # GIVEN
+        my_list = MyList()
+        my_list.append_list([0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8])
+
+        # WHEN
+        my_list_len = my_list.get_num_words()
+        is_aligned = my_list.is_aligned()
+        my_word = my_list.get_word(0)
+
+        # THEN
+        assert_that(my_list_len, equal_to(1))
+        assert_that(is_aligned, equal_to(True))
+        assert_that(my_word, equal_to(0x0102_0304_0506_0708))
+
+
+    def test_get_num_words_len_16(self):
+        # GIVEN
+        my_list = MyList()
+        my_list.append_list([
+            0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8,
+            0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf, 0x10
+            ])
+
+        # WHEN
+        my_list_len = my_list.get_num_words()
+        is_aligned = my_list.is_aligned()
+        first_word = my_list.get_word(0)
+        second_word = my_list.get_word(1)
+
+        # THEN
+        assert_that(my_list_len, equal_to(2))
+        assert_that(is_aligned, equal_to(True))
+        assert_that(first_word, equal_to(0x0102_0304_0506_0708))
+        assert_that(second_word, equal_to(0x090a_0b0c_0d0e_0f10))
+
+
+    def test_get_num_words_len_32(self):
+        # GIVEN
+        my_list = MyList()
+        my_list.append_list([
+             0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  0x8,
+             0x9,  0xa,  0xb,  0xc,  0xd,  0xe,  0xf, 0x10,
+            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+            0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20,
+            ])
+
+        # WHEN
+        my_list_len = my_list.get_num_words()
+        is_aligned = my_list.is_aligned()
+        first_word = my_list.get_word(0)
+        last_word = my_list.get_word(3)
+
+        # THEN
+        assert_that(my_list_len, equal_to(4))
+        assert_that(is_aligned, equal_to(True))
+        assert_that(first_word, equal_to(0x0102_0304_0506_0708))
+        assert_that(last_word, equal_to(0x191a_1b1c_1d1e_1f20))
+
+
+    def test_get_num_words_len_27(self):
+        # GIVEN
+        my_list = MyList()
+        my_list.append_list([
+             0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  0x8,
+             0x9,  0xa,  0xb,  0xc,  0xd,  0xe,  0xf, 0x10,
+            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+            0x19, 0x1a, 0x1b
+            ])
+
+        # WHEN
+        my_list_len = my_list.get_num_words()
+        is_aligned = my_list.is_aligned()
+        first_word = my_list.get_word(0)
+        last_word = my_list.get_word(3)
+
+        # THEN
+        assert_that(my_list_len, equal_to(4))
+        assert_that(is_aligned, equal_to(False))
+        assert_that(first_word, equal_to(0x0102_0304_0506_0708))
+        assert_that(last_word, equal_to(0x191a_1b00_0000_0000))
 
 
 class TestTime(TestCase):
@@ -132,4 +251,5 @@ class TestSeqUnitHdr(TestCase):
                 "[0x0E 0x00 0x02 0x01 0x01 0x00 0x00 0x00 0x06 0x20 0x97 0x85 0x00 0x00]"
             ),
         )
-        assert_that(out_list.get_word(1), equal_to(0xE00020101000000))
+        assert_that(out_list.get_word(0), equal_to(0x0e00_0201_0100_0000))
+        assert_that(out_list.get_word(1), equal_to(0x0620_9785_0000_0000))

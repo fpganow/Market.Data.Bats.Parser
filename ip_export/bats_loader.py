@@ -49,50 +49,32 @@ class MyList(object):
         return len(self._data)
 
     @sv()
+    def get_num_words(self):
+        return ((len(self._data) // 8) + (len(self._data) % 8 > 0))
+
+    @sv()
+    def is_aligned(self):
+        return (len(self._data) % 8 == 0)
+
+    @sv()
     def get_word(self, index):
-        list_len = len(self._data)
-        remaining_bytes = list_len
-        if remaining_bytes == 0:
-            return 0x0
-        return 1
-#        # Select word
-#        num_words = list_len // 8
-#        last_word = list_len % 8
-#        start_idx = math.floor(index * 8)
-#
-#        remaining_bytes = 8
-#        if start_idx + 8 > list_len:
-#            remaining_bytes = list_len - start_idx
-#
-#        num_zeros = 0
-#        # 1 to 7 length
-#        if remaining_bytes < 8:
-#            # size   |   needs 0s
-#            needs_bytes = 8 - remaining_bytes
-#            bytes_to_cut = remaining_bytes
-#            num_zeros = needs_bytes
-#        else:
-#            needs_bytes = 0
-#            bytes_to_cut = 8
-#
-#        print(f'start_idx: {start_idx}')
-#        remaining_bytes -= bytes_to_cut
-#        slice = [bytes_to_cut:]
-#        final_word = 0
-#
-#        while len(slice) > 0:
-#            final_word = (final_word << 8) | slice[0]
-#            slice = slice[1:]
-#            #print(f'final_word: {hex(final_word)}')
-#            #print(f'slice: {[hex(x) for x in slice]}')
-#            #print(f'len(slice): {len(slice)}')
-#
-#        # Add padding
-#        for i in range(num_zeros):
-#            final_word = (final_word << 8) | 0
-#
-#        print(f'returning: {hex(final_word)}')
-#        return final_word
+        data_to_copy = self._data.copy()
+
+        start_idx = index * 8
+        stop_idx = start_idx + 8
+        if start_idx + 8 > len(data_to_copy):
+            stop_idx = len(data_to_copy)
+
+        final_word = 0
+        for i in range(start_idx, stop_idx):
+            final_word = (final_word << 8) | data_to_copy[i]
+
+        num_zeros = 8 - (stop_idx - start_idx)
+        # Add padding
+        for i in range(num_zeros):
+            final_word = (final_word << 8) | 0
+
+        return final_word
 
     @sv()
     def from_array(self, in_list):
