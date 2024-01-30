@@ -123,7 +123,7 @@ module bats_parser_tb();
     begin
         MyList my_list;
         int ret;
-        int i_word;
+        longint i_word;
         int i;
         // Set default control signal values
         reset = 0;
@@ -246,7 +246,7 @@ module bats_parser_tb();
         $display("+---------------------------------------------------------------------------------+");
         $display("  Test #4 - Create SeqUnitHdr with single Time Message, pass through BATS.Parser IP");
         my_list = new();
-        ret = get_time(35199, my_list, 0);
+        ret = get_time(32199, my_list, 0);
         ret = get_seq_unit_hdr(1, 1, my_list);
         assert (ret == 0);
         $display("  -  Return value = %0d", ret);
@@ -254,7 +254,33 @@ module bats_parser_tb();
         $display("  -  Length = %0d", my_list.get_length());
 
         i_word = my_list.get_word(0);
-        $display("  -  word[0] = %0d", i_word);
+        $display("  -  i_word[0] = 0x%0x", i_word);
+
+        in_ip_data_valid = 1;
+        in_ip_byte_enables = 8'b11111111;        
+        in_ip_bytes = i_word;
+
+        #(period*1);
+        i_word = my_list.get_word(1);
+        in_ip_data_valid = 1;
+        in_ip_byte_enables = 8'b11111100;
+        in_ip_bytes = i_word;
+        //in_ip_bytes = 64'h062020d206000000;
+
+        #(period*1);
+        in_ip_data_valid = 0;
+        in_ip_byte_enables = 8'b00000000;
+        in_ip_bytes = 64'h0000000000000000;
+
+        $display("Sent 2nd Test time message");
+        wait (out_ip_orderbook_command_valid == 1);
+        $display("out_ip_orderbook_command: %d",
+                        out_ip_orderbook_command_valid);
+        $display("out_ip_seconds_u64: %d (0x%x)",
+                        out_ip_seconds_u64,
+                        out_ip_seconds_u64);
+        $display("out_ip_orderbook_command_type: %d",
+                        out_ip_orderbook_command_type);
         //in_ip_bytes = 64'h0e00010102000000;
         //in_ip_bytes = 64'h062020d206000000;
 

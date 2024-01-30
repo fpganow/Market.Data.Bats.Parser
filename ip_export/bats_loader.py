@@ -57,11 +57,10 @@ class MyList(object):
         return (len(self._data) % 8 == 0)
 
     @sv(index=DataType.Int,
-        return_type=DataType.Int)
+        return_type=DataType.ULongInt)
     def get_word(self, index):
         final_word = 0
         try:
-            return 99
             data_to_copy = self._data.copy()
 
             start_idx = index * 8
@@ -82,6 +81,11 @@ class MyList(object):
             sys.stdout.flush()
 
         return final_word
+
+    @sv(index=DataType.Int,
+        return_type=DataType.ULongInt)
+    def get_byte_enables(self, index):
+        return 0xF
 
     @sv()
     def from_array(self, in_list):
