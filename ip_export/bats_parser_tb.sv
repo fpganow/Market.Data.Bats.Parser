@@ -161,29 +161,34 @@ module bats_parser_tb();
         in_ip_reset = 0;
         #(period*5);
 
-        // Most basic test - Sequenced Unit Header with Time
+        $display("+=================================================================================+");
+        $display("|  Hard-coded Sequenced Unit Header                                               |");
+        $display("+---------------------------------------------------------------------------------+");
+        $display("  Test #1 - Send hard-coded Sequenced Unit Header");
+        $display("    - 1st WORD");
         in_ip_data_valid = 1;
-        in_ip_byte_enables = 8'b11111111;        
+        in_ip_byte_enables = 8'b11111111;
         in_ip_bytes = 64'h0e00010102000000;
-
+        $display("    - 2nd WORD");
         #(period*1);
         in_ip_data_valid = 1;
         in_ip_byte_enables = 8'b11111100;
         in_ip_bytes = 64'h062020d206000000;
-
+        $display("    - Clear data_valid");
         #(period*1);
         in_ip_data_valid = 0;
         in_ip_byte_enables = 8'b00000000;
         in_ip_bytes = 64'h0000000000000000;
 
-        $display("Sent Test time message");
+        $display("    + Assert result");
+        #(period*1);
         wait (out_ip_orderbook_command_valid == 1);
-        $display("out_ip_orderbook_command: %d",
+        $display("    - out_ip_orderbook_command_valid: %d",
                         out_ip_orderbook_command_valid);
-        $display("out_ip_seconds_u64: %d (0x%x)",
+        $display("    - out_ip_seconds_u64: %d (0x%x)",
                         out_ip_seconds_u64,
                         out_ip_seconds_u64);
-        $display("out_ip_orderbook_command_type: %d",
+        $display("    - out_ip_orderbook_command_type: %d",
                         out_ip_orderbook_command_type);
 
         $display("+=================================================================================+");
@@ -265,43 +270,24 @@ module bats_parser_tb();
         in_ip_data_valid = 1;
         in_ip_byte_enables = 8'b11111100;
         in_ip_bytes = i_word;
-        //in_ip_bytes = 64'h062020d206000000;
 
         #(period*1);
         in_ip_data_valid = 0;
         in_ip_byte_enables = 8'b00000000;
         in_ip_bytes = 64'h0000000000000000;
 
-        $display("Sent 2nd Test time message");
+        $display("  - Sent 2nd Test time message");
+        $display("    Results:");
         wait (out_ip_orderbook_command_valid == 1);
-        $display("out_ip_orderbook_command: %d",
+        $display("    - out_ip_orderbook_command_valid: %d",
                         out_ip_orderbook_command_valid);
-        $display("out_ip_seconds_u64: %d (0x%x)",
+        assert (out_ip_seconds_u64 == 32199);
+        $display("    - out_ip_seconds_u64: %d (0x%x)",
                         out_ip_seconds_u64,
                         out_ip_seconds_u64);
-        $display("out_ip_orderbook_command_type: %d",
+        assert (out_ip_orderbook_command_type == 0);
+        $display("    - out_ip_orderbook_command_type: %d",
                         out_ip_orderbook_command_type);
-        //in_ip_bytes = 64'h0e00010102000000;
-        //in_ip_bytes = 64'h062020d206000000;
-
-//        $display("  -  Bytes = %s", my_list.to_str(0));
-//        assert (my_list.to_str(0) == "[0x6, 0x20, 0x98, 0x85, 0x0, 0x0]");
-//
-        // Test # - Get Sequenced Unit Header and Time message -via python-
-        //           into FPGA
-        //           - Generate Time message
-        //           - Generate Seq Unit Hdr using size of Time message
-        //$display("+---------------------------------------------------------------------------------+");
-        //$display("Test #3 - Create Seg Unit Header and Time Message together");
-
-        // Wait for result
-
-        // Validate results
-//        for (i=0; i<my_list.get_length(); i++)
-//        begin
-//            $display(" got [%d] = %d", i, my_list.get_idx(i));
-//        end
-//        $display("my_list.get_avg() = %d", my_list.get_avg());
 
         pysv_finalize();
         $display("+---------------------------------------------------------------------------------+");

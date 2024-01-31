@@ -56,6 +56,7 @@ clean:
 	cd ip_export && rm -f *.jou
 	cd ip_export && rm -f *.wdb
 	cd ip_export && rm -rf xsim.dir
+	cd ip_export && rm -rf __pycache__
 	cd ip_export/sim && rm -f *.log *.pb *.jou
 	cd ip_export/sim && rm -rf xsim.dir
 

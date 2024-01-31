@@ -77,7 +77,7 @@ class MyList(object):
                 final_word = (final_word << 8) | 0
 
         except Exception as EX:
-            print(f'Exception in MyList.get_str(...): {ex}')
+            print(f'Exception in MyList.get_word(..): {ex}')
             sys.stdout.flush()
 
         return final_word
