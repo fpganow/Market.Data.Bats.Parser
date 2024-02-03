@@ -83,9 +83,18 @@ class MyList(object):
         return final_word
 
     @sv(index=DataType.Int,
-        return_type=DataType.ULongInt)
+        return_type=DataType.UInt)
     def get_byte_enables(self, index):
-        return 0xF
+        start_idx = index * 8
+        stop_idx = start_idx + 8
+        if start_idx + 8 > len(self._data):
+            stop_idx = len(self._data)
+
+        num_zeros = 8 - (stop_idx - start_idx)
+        print(f'num_zeroes: {num_zeros}')
+        casted = (0xff << num_zeros) & 0xf
+        print(f'casted: {hex(casted)} - {bin(casted)}')
+        return (0xff << num_zeros) & 0xff
 
     @sv()
     def from_array(self, in_list):

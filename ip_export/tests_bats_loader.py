@@ -89,11 +89,13 @@ class TestMyList(TestCase):
         my_list_len = my_list.get_num_words()
         is_aligned = my_list.is_aligned()
         my_word = my_list.get_word(0)
+        byte_enables = my_list.get_byte_enables(0)
 
         # THEN
         assert_that(my_list_len, equal_to(1))
         assert_that(is_aligned, equal_to(False))
         assert_that(my_word, equal_to(0x0100_0000_0000_0000))
+        assert_that(byte_enables, equal_to(0b1000_0000))
 
 
     def test_get_num_words_len_7(self):
@@ -105,11 +107,13 @@ class TestMyList(TestCase):
         my_list_len = my_list.get_num_words()
         is_aligned = my_list.is_aligned()
         my_word = my_list.get_word(0)
+        byte_enables = my_list.get_byte_enables(0)
 
         # THEN
         assert_that(my_list_len, equal_to(1))
         assert_that(is_aligned, equal_to(False))
         assert_that(my_word, equal_to(0x0102_0304_0506_0700))
+        assert_that(byte_enables, equal_to(0b1111_1110))
 
 
     def test_get_num_words_len_8(self):
@@ -121,11 +125,13 @@ class TestMyList(TestCase):
         my_list_len = my_list.get_num_words()
         is_aligned = my_list.is_aligned()
         my_word = my_list.get_word(0)
+        byte_enables = my_list.get_byte_enables(0)
 
         # THEN
         assert_that(my_list_len, equal_to(1))
         assert_that(is_aligned, equal_to(True))
         assert_that(my_word, equal_to(0x0102_0304_0506_0708))
+        assert_that(byte_enables, equal_to(0b1111_1111))
 
 
     def test_get_num_words_len_16(self):
@@ -139,14 +145,20 @@ class TestMyList(TestCase):
         # WHEN
         my_list_len = my_list.get_num_words()
         is_aligned = my_list.is_aligned()
-        first_word = my_list.get_word(0)
-        second_word = my_list.get_word(1)
+
+        word_1 = my_list.get_word(0)
+        byte_enables_1 = my_list.get_byte_enables(0)
+
+        word_1 = my_list.get_word(1)
+        byte_enables_2 = my_list.get_byte_enables(0)
 
         # THEN
         assert_that(my_list_len, equal_to(2))
         assert_that(is_aligned, equal_to(True))
-        assert_that(first_word, equal_to(0x0102_0304_0506_0708))
-        assert_that(second_word, equal_to(0x090a_0b0c_0d0e_0f10))
+
+        assert_that(word_1, equal_to(0x0102_0304_0506_0708))
+
+        assert_that(word_2, equal_to(0x090a_0b0c_0d0e_0f10))
 
 
     def test_get_num_words_len_32(self):
@@ -163,7 +175,9 @@ class TestMyList(TestCase):
         my_list_len = my_list.get_num_words()
         is_aligned = my_list.is_aligned()
         first_word = my_list.get_word(0)
+        first_word_byte_enables = my_list.get_byte_enables(0)
         last_word = my_list.get_word(3)
+        last_word_byte_enables = my_list.get_byte_enables(0)
 
         # THEN
         assert_that(my_list_len, equal_to(4))
