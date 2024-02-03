@@ -1,8 +1,6 @@
 SHELL := /bin/bash
 
 VIVADO_VER           := 2023.2
-PYTHON_LIN           := "python3.8"
-PYTHON_WIN           := C:\\Users\\johns\\AppData\\Local\\Programs\\Python\\Python39\\python.exe
 
 ifeq ($(OS),Windows_NT)
     ARCH=win

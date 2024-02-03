@@ -9,7 +9,7 @@ from pysv import (
 import sys
 from typing import Any, List
 
-import pitch
+import cboe_pitch
 
 ##############################################################################
 # Custom type for transferring list elements back to SystemVerilog
@@ -138,13 +138,13 @@ def get_time(sec_since_midnight: int,
         parms = {
                 "Time": sec_since_midnight
         }
-        out_a = pitch.get_time(json.dumps(parms))
+        out_a = cboe_pitch.get_time(json.dumps(parms))
         if prepend is True:
             out_list.prepend_list(out_a)
         else:
             out_list.append_list(out_a)
     except Exception as ex:
-        print(f'EXCEPTION in pitch.get_time(): {ex}')
+        print(f'EXCEPTION in cboe_pitch.get_time(): {ex}')
         sys.stdout.flush()
         return 1
     return 0
@@ -156,7 +156,7 @@ def get_time(sec_since_midnight: int,
     return_type=DataType.Int)
 def get_seq_unit_hdr(hdr_seq: int, hdr_count: int, msgs_array: MyList) -> bool:
     """
-    Will call pitch.get_seq_unit_hdr with a parameters dictionary (JSON)
+    Will call cboe_pitch.get_seq_unit_hdr with a parameters dictionary (JSON)
     and with a list representing the raw bytes of all messages to be included
     in the Sequenced Unit Header.  Parameters should have the following format:
         hdr_seq
@@ -171,11 +171,11 @@ def get_seq_unit_hdr(hdr_seq: int, hdr_count: int, msgs_array: MyList) -> bool:
 
         # copy msgs_array to temp_array
         temp_array = msgs_array._data
-        seq_unit_hdr_arr = pitch.get_seq_unit_hdr(json.dumps(parms),
+        seq_unit_hdr_arr = cboe_pitch.get_seq_unit_hdr(json.dumps(parms),
                                         msgs_array=temp_array)
         msgs_array.replace_list(seq_unit_hdr_arr)
     except Exception as ex:
-        print(f'EXCEPTION in pitch.get_seq_unit_hdr(): {ex}')
+        print(f'EXCEPTION in cboe_pitch.get_seq_unit_hdr(): {ex}')
         sys.stdout.flush()
         return 1
 

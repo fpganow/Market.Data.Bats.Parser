@@ -1,2 +1,3 @@
 attrs
+cboe_pitch>=0.0.5
 pysv==0.2.0
