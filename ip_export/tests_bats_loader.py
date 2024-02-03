@@ -149,7 +149,7 @@ class TestMyList(TestCase):
         word_1 = my_list.get_word(0)
         byte_enables_1 = my_list.get_byte_enables(0)
 
-        word_1 = my_list.get_word(1)
+        word_2 = my_list.get_word(1)
         byte_enables_2 = my_list.get_byte_enables(0)
 
         # THEN
@@ -157,8 +157,10 @@ class TestMyList(TestCase):
         assert_that(is_aligned, equal_to(True))
 
         assert_that(word_1, equal_to(0x0102_0304_0506_0708))
+        assert_that(byte_enables_1, equal_to(0b1111_1111))
 
         assert_that(word_2, equal_to(0x090a_0b0c_0d0e_0f10))
+        assert_that(byte_enables_2, equal_to(0b1111_1111))
 
 
     def test_get_num_words_len_32(self):
@@ -174,16 +176,22 @@ class TestMyList(TestCase):
         # WHEN
         my_list_len = my_list.get_num_words()
         is_aligned = my_list.is_aligned()
+
         first_word = my_list.get_word(0)
-        first_word_byte_enables = my_list.get_byte_enables(0)
+        first_word_be = my_list.get_byte_enables(0)
+
         last_word = my_list.get_word(3)
-        last_word_byte_enables = my_list.get_byte_enables(0)
+        last_word_be = my_list.get_byte_enables(3)
 
         # THEN
         assert_that(my_list_len, equal_to(4))
         assert_that(is_aligned, equal_to(True))
+
         assert_that(first_word, equal_to(0x0102_0304_0506_0708))
+        assert_that(first_word_be, equal_to(0b1111_1111))
+
         assert_that(last_word, equal_to(0x191a_1b1c_1d1e_1f20))
+        assert_that(last_word_be, equal_to(0b1111_1111))
 
 
     def test_get_num_words_len_27(self):
@@ -199,14 +207,22 @@ class TestMyList(TestCase):
         # WHEN
         my_list_len = my_list.get_num_words()
         is_aligned = my_list.is_aligned()
+
         first_word = my_list.get_word(0)
+        first_word_be = my_list.get_byte_enables(0)
+
         last_word = my_list.get_word(3)
+        last_word_be = my_list.get_byte_enables(3)
 
         # THEN
         assert_that(my_list_len, equal_to(4))
         assert_that(is_aligned, equal_to(False))
+
         assert_that(first_word, equal_to(0x0102_0304_0506_0708))
+        assert_that(first_word_be, equal_to(0b1111_1111))
+
         assert_that(last_word, equal_to(0x191a_1b00_0000_0000))
+        assert_that(first_word_be, equal_to(0b1111_1111))
 
 
 class TestTime(TestCase):
