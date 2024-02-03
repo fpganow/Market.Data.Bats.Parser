@@ -68,7 +68,7 @@ info:
 
 # Generate synthesized version manually
 # Then script it out
-export PYTHON=python3.8
+export PYTHON=python3.11
 py_codegen:
 	@echo "  - Creating Python Bindings"
 	@echo "    Using Python=${PYTHON}"
