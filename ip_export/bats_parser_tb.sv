@@ -31,6 +31,9 @@ module bats_parser_tb();
     // duration for each bit = 20 * timescale = 20 * 1 ns = 20 ns
     localparam period = 25;
     localparam duty_cycle = period / 2;
+    integer counter = 0;
+    integer start_time = 0;
+    integer stop_time = 0;
 
     reg clk40;
 
@@ -41,6 +44,7 @@ module bats_parser_tb();
 
         clk40 = 1'b0;
         #duty_cycle;
+        counter++;
     end
 
     // Variables for NiFpgaIPWrapper_bats_parser_ip
@@ -270,6 +274,7 @@ module bats_parser_tb();
         in_ip_data_valid = 1;
         in_ip_byte_enables = 8'b11111100;
         in_ip_bytes = i_word;
+        start_time = counter;
 
         #(period*1);
         in_ip_data_valid = 0;
@@ -279,11 +284,15 @@ module bats_parser_tb();
         $display("  - Sent 2nd Test time message");
         $display("    Results:");
         wait (out_ip_orderbook_command_valid == 1);
+        stop_time = counter;
+        $display("start_time=%d", start_time);
+        $display("stop_time=%d", stop_time);
+        $display("DIFF=%d", (stop_time-start_time));
         $display("    - out_ip_orderbook_command_valid: %d",
                         out_ip_orderbook_command_valid);
         assert (out_ip_seconds_u64 == 32199);
         $display("    - out_ip_seconds_u64: %d (0x%x)",
-                        out_ip_seconds_u64,
+                        out_ip_seconds_u6,
                         out_ip_seconds_u64);
         assert (out_ip_orderbook_command_type == 0);
         $display("    - out_ip_orderbook_command_type: %d",
