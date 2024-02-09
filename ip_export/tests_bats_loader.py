@@ -1,7 +1,11 @@
 from hamcrest import assert_that, equal_to, has_length
 from unittest import TestCase
 
-from bats_loader import MyList, get_time, get_seq_unit_hdr
+from bats_loader import (
+    MyList,
+    get_seq_unit_hdr
+    get_time,
+)
 
 
 class TestMyList(TestCase):
@@ -237,6 +241,76 @@ class TestTime(TestCase):
         # THEN
         assert_that(my_list.get_length(), equal_to(6))
         assert_that(my_list.to_str(no_x=True), equal_to("[06 20 98 85 00 00]"))
+
+
+class TestAddOrder(TestCase):
+    def test_get_add_order_long_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        side = "B"
+        quantity = 95_000
+        symbol = "AAPL"
+        price = 0.905
+
+        # WHEN
+        args = {
+            "Time Offset": 44_000,
+            "Order Id": "ORID0001",
+            "Side Indicator": "B",
+            "Quantity": 95_000,
+            "Symbol": "AAPL",
+            "Price": 0.905,
+        }
+        msg_bytes = get_add_order_long(parameters=Parameters.to_json(args))
+
+        # THEN
+        pass
+
+    def test_get_add_order_short_create(self):
+        pass
+
+    def test_get_add_order_expanded_create(self):
+        pass
+
+
+class TestOrderExecuted(TestCase):
+    def test_order_executed_create(self):
+        pass
+
+    def test_order_executed_at_price_size_create(self):
+        pass
+
+
+class TestReduceSize(TestCase):
+    def test_reduce_size_long_create(self):
+        pass
+
+    def test_reduce_size_short_create(self):
+        pass
+
+
+class TestModifyOrder(TestCase):
+    def test_modify_order_long_create(self):
+        pass
+
+    def test_modify_order_short_create(self):
+        pass
+
+
+class TestDeleteOrder(TestCase):
+    def test_delete_order_create(self):
+        pass
+
+class TestTrade(TestCase):
+    def test_trade_long_create(self):
+        pass
+
+    def test_trade_short_create(self):
+        pass
+
+    def test_trade_expanded_create(self):
+        pass
 
 
 class TestSeqUnitHdr(TestCase):

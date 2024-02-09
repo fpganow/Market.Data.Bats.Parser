@@ -125,6 +125,8 @@ class MyList(object):
 ##############################################################################
 # Wrappers around pitch module functions
 ##############################################################################
+def post_process(out_list: MyList
+
 # TODO: Add wrapper functions for remaining message types:
 #  - AddOrder
 @sv(sec_since_midnight=DataType.Int,
