@@ -6,12 +6,22 @@ from bats_loader import (
     get_seq_unit_hdr,
     get_time,
     get_add_order_long, get_add_order_short, get_add_order_expanded,
-#    get_order_executed, get_order_executed_at_price_size,
+    get_order_executed, get_order_executed_at_price_size,
 #    get_reduce_size_long, get_reduce_size_short,
 #    get_modify_order_long, get_modify_order_short,
 #    get_delete_order,
 #    get_trade_long, get_trade_short, get_trade_expanded
 )
+
+
+def dump_bytes(msg_bytes):
+    bytes_copy = msg_bytes.copy()
+    slick = None
+    while len(bytes_copy) > 0:
+        slick = bytes_copy[0:8]
+        line_str = ', '.join([f'{x:#04x}' for x in slick])
+        print(f'\t{line_str}, ')
+        bytes_copy = bytes_copy[8:]
 
 
 class TestMyList(TestCase):
@@ -262,14 +272,6 @@ class TestAddOrder(TestCase):
         my_list = MyList()
 
         # WHEN
-        args = {
-            "Time Offset": 44_000,
-            "Order Id": "ORID0001",
-            "Side Indicator": "B",
-            "Quantity": 95_000,
-            "Symbol": "AAPL",
-            "Price": 0.905,
-        }
         msg_bytes = get_add_order_long(time_offset=time_offset,
                                        order_id=order_id,
                                        side_indicator=side_indicator,
@@ -288,15 +290,100 @@ class TestAddOrder(TestCase):
             0x0, 0x1]))
 
     def test_get_add_order_short_create(self):
-        pass
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        side_indicator = "B"
+        quantity = 20_000
+        symbol = "AAPL"
+        price = 1.95
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_add_order_short(time_offset=time_offset,
+                                       order_id=order_id,
+                                       side_indicator=side_indicator,
+                                       quantity=quantity,
+                                       symbol=symbol,
+                                       price=price,
+                                       out_list=my_list)
+
+        # THEN
+        assert_that(my_list.get_length(), equal_to(26))
+        assert_that(my_list.to_array(), equal_to([
+            0x1a, 0x22, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x42, 0x20,
+            0x4e, 0x41, 0x41, 0x50, 0x4c, 0x20, 0x20, 0xc3,
+            0x00, 0x01
+            ]))
 
     def test_get_add_order_expanded_create(self):
-        pass
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        side_indicator = "B"
+        quantity = 95_000
+        symbol = "AAPL"
+        price = 0.905
+        customer_indicator = "C"
+        participant_id = "MPID"
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_add_order_expanded(time_offset=time_offset,
+                                       order_id=order_id,
+                                       side_indicator=side_indicator,
+                                       quantity=quantity,
+                                       symbol=symbol,
+                                       price=price,
+                                       customer_indicator=customer_indicator,
+                                       participant_id=participant_id,
+                                       out_list=my_list)
+
+        # THEN
+        dump_bytes(my_list.to_array())
+        assert_that(my_list.get_length(), equal_to(41))
+        assert_that(my_list.to_array(), equal_to([
+            0x29, 0x2f, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x42, 0x18,
+            0x73, 0x01, 0x00, 0x41, 0x41, 0x50, 0x4c, 0x20,
+            0x20, 0x20, 0x20, 0x5a, 0x23, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x01, 0x4d, 0x50, 0x49, 0x44,
+            0x43,
+        ]))
 
 
 class TestOrderExecuted(TestCase):
     def test_order_executed_create(self):
-        pass
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        side_indicator = "B"
+        quantity = 95_000
+        symbol = "AAPL"
+        price = 0.905
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_order_executed(time_offset=time_offset,
+                                       order_id=order_id,
+                                       side_indicator=side_indicator,
+                                       quantity=quantity,
+                                       symbol=symbol,
+                                       price=price,
+                                       out_list=my_list)
+
+        # THEN
+        assert_that(my_list.get_length(), equal_to(34))
+        assert_that(my_list.to_array(), equal_to([
+            0x22, 0x21, 0xe0, 0xab,  0x0,  0x0, 0x4f, 0x52, 
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x42, 0x18,
+            0x73,  0x1,  0x0, 0x41, 0x41, 0x50, 0x4c, 0x20,
+            0x20, 0x5a, 0x23,  0x0,  0x0,  0x0,  0x0,  0x0, 
+            0x0, 0x1]))
 
     def test_order_executed_at_price_size_create(self):
         pass
