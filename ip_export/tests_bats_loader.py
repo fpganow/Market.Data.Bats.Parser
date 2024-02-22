@@ -5,8 +5,7 @@ from bats_loader import (
     MyList,
     get_seq_unit_hdr,
     get_time,
-    get_add_order_long
-#, get_add_order_short, get_add_order_expanded,
+    get_add_order_long, get_add_order_short, get_add_order_expanded,
 #    get_order_executed, get_order_executed_at_price_size,
 #    get_reduce_size_long, get_reduce_size_short,
 #    get_modify_order_long, get_modify_order_short,

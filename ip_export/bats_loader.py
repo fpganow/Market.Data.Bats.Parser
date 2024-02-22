@@ -209,6 +209,81 @@ def get_add_order_long(time_offset: int,
     return 0
 
 
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    side_indicator=DataType.String,
+    quantity=DataType.Int,
+    symbol=DataType.String,
+    price=DataType,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_add_order_short(time_offset: int,
+                       order_id: str,
+                       side_indicator: str,
+                       quantity: int,
+                       symbol: str,
+                       price: float,
+                       out_list: MyList,
+                       prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+            "Side Indicator": side_indicator,
+            "Quantity": quantity,
+            "Symbol": symbol,
+            "Price": price,
+        }
+        out_a = cboe_pitch.get_add_order_short(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_add_order_short(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
+
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    side_indicator=DataType.String,
+    quantity=DataType.Int,
+    symbol=DataType.String,
+    price=DataType,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_add_order_expanded(time_offset: int,
+                       order_id: str,
+                       side_indicator: str,
+                       quantity: int,
+                       symbol: str,
+                       price: float,
+                       out_list: MyList,
+                       prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+            "Side Indicator": side_indicator,
+            "Quantity": quantity,
+            "Symbol": symbol,
+            "Price": price,
+        }
+        out_a = cboe_pitch.get_add_order_expanded(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_add_order_expanded(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
 @sv(hdr_seq=DataType.Int,
     hdr_count=DataType.Int,
     msgs_array=MyList,

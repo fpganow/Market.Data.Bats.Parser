@@ -103,6 +103,14 @@ install_py_deps_linux:
 install_deps: install_deps_${ARCH}
 	@echo "Installed pysv using PYTHON=${PYTHON}"
 
+py_test:
+	@echo
+	@echo " - Running Python Tests"
+	cd ip_export && ${PYTHON} -m pytest --disable-warnings tests*.py
+
+
+legacy:
+	echo
 # Old manually created compile elaborate simulate commands created without .prj files
 	#@echo
 	#@echo " - Compiling IP Wrapper (Open Checkpoint and synthesize)"
