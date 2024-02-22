@@ -11,6 +11,24 @@ from typing import Any, List
 
 import cboe_pitch
 
+#TODO: Implement the following functions
+#  [x]  get_seq_unit_hdr
+#  [x]  get_time
+#  [] get_add_order_long
+#  [] get_add_order_short
+#  [] get_add_order_expanded
+#  [] get_order_executed
+#  [] get_order_executed_at_price_size
+#  [] get_reduce_size_long
+#  [] get_reduce_size_short
+#  [] get_modify_order_long
+#  [] get_modify_order_short
+#  [] get_delete_order
+#  [] get_trade_long
+#  [] get_trade_short
+#  [] get_trade_expanded
+
+
 ##############################################################################
 # Custom type for transferring list elements back to SystemVerilog
 ##############################################################################
@@ -125,9 +143,10 @@ class MyList(object):
 ##############################################################################
 # Wrappers around pitch module functions
 ##############################################################################
-def post_process(out_list: MyList
+def post_process(out_list: MyList) -> None:
+    pass
 
-# TODO: Add wrapper functions for remaining message types:
+
 #  - AddOrder
 @sv(sec_since_midnight=DataType.Int,
     out_list=MyList,
@@ -147,6 +166,44 @@ def get_time(sec_since_midnight: int,
             out_list.append_list(out_a)
     except Exception as ex:
         print(f'EXCEPTION in cboe_pitch.get_time(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
+
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    side_indicator=DataType.String,
+    quantity=DataType.Int,
+    symbol=DataType.String,
+    price=DataType,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_add_order_long(time_offset: int,
+                       order_id: str,
+                       side_indicator: str,
+                       quantity: int,
+                       symbol: str,
+                       price: float,
+                       out_list: MyList,
+                       prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+            "Side Indicator": side_indicator,
+            "Quantity": quantity,
+            "Symbol": symbol,
+            "Price": price,
+        }
+        out_a = cboe_pitch.get_add_order_long(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_add_order_long(): {ex}')
         sys.stdout.flush()
         return 1
     return 0

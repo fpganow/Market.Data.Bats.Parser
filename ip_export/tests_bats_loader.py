@@ -3,8 +3,15 @@ from unittest import TestCase
 
 from bats_loader import (
     MyList,
-    get_seq_unit_hdr
+    get_seq_unit_hdr,
     get_time,
+    get_add_order_long
+#, get_add_order_short, get_add_order_expanded,
+#    get_order_executed, get_order_executed_at_price_size,
+#    get_reduce_size_long, get_reduce_size_short,
+#    get_modify_order_long, get_modify_order_short,
+#    get_delete_order,
+#    get_trade_long, get_trade_short, get_trade_expanded
 )
 
 
@@ -248,10 +255,12 @@ class TestAddOrder(TestCase):
         # GIVEN
         time_offset = 44_000
         order_id = "ORID0001"
-        side = "B"
+        side_indicator = "B"
         quantity = 95_000
         symbol = "AAPL"
         price = 0.905
+
+        my_list = MyList()
 
         # WHEN
         args = {
@@ -262,10 +271,22 @@ class TestAddOrder(TestCase):
             "Symbol": "AAPL",
             "Price": 0.905,
         }
-        msg_bytes = get_add_order_long(parameters=Parameters.to_json(args))
+        msg_bytes = get_add_order_long(time_offset=time_offset,
+                                       order_id=order_id,
+                                       side_indicator=side_indicator,
+                                       quantity=quantity,
+                                       symbol=symbol,
+                                       price=price,
+                                       out_list=my_list)
 
         # THEN
-        pass
+        assert_that(my_list.get_length(), equal_to(34))
+        assert_that(my_list.to_array(), equal_to([
+            0x22, 0x21, 0xe0, 0xab,  0x0,  0x0, 0x4f, 0x52, 
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x42, 0x18,
+            0x73,  0x1,  0x0, 0x41, 0x41, 0x50, 0x4c, 0x20,
+            0x20, 0x5a, 0x23,  0x0,  0x0,  0x0,  0x0,  0x0, 
+            0x0, 0x1]))
 
     def test_get_add_order_short_create(self):
         pass

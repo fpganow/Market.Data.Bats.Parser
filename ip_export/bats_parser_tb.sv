@@ -4,22 +4,11 @@
 import pysv::*;
 
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
 // 
 // Create Date: 03/16/2021 09:23:26 PM
-// Design Name: 
 // Module Name: bats_parser_tb
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
 // Description: 
 // 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -115,9 +104,6 @@ module bats_parser_tb();
         .Clk40(clk40)
     );
     // AUTO_GENERATED_CODE_END: parse.py
-
-    integer fptr;
-    integer scan_faults;
 
     initial
     begin
