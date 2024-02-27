@@ -289,6 +289,7 @@ class TestAddOrder(TestCase):
             0x20, 0x5a, 0x23,  0x0,  0x0,  0x0,  0x0,  0x0, 
             0x0, 0x1]))
 
+
     def test_get_add_order_short_create(self):
         # GIVEN
         time_offset = 44_000
@@ -317,6 +318,7 @@ class TestAddOrder(TestCase):
             0x4e, 0x41, 0x41, 0x50, 0x4c, 0x20, 0x20, 0xc3,
             0x00, 0x01
             ]))
+
 
     def test_get_add_order_expanded_create(self):
         # GIVEN

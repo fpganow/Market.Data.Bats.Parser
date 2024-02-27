@@ -76,15 +76,15 @@ py_codegen:
 
 compile: py_codegen
 	@echo "  - Compiling"
-	${SRC_XIL} && cd ip_export && ./compile.sh
+	${SRC_XIL} && cd ip_export/sim && ./compile.sh
 
 elaborate: compile
 	@echo "  - Elaborating"
-	${SRC_XIL} && cd ip_export && ./elaborate.sh
+	${SRC_XIL} && cd ip_export/sim && ./elaborate.sh
 
 simulate: elaborate
 	@echo "  - Simulating"
-	${SRC_XIL} && cd ip_export && ./simulate.sh
+	${SRC_XIL} && cd ip_export/sim && ./simulate.sh
 
 waveform:
 	@echo

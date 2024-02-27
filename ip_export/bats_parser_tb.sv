@@ -121,6 +121,7 @@ module bats_parser_tb();
         //   data_in
         //   data_valid
         reset = 0;
+        in_ip_reset = 0;
         in_ip_ready_for_orderbook_command = 1;
         in_ip_ready_for_debug = 1;
         in_ip_data_valid = 0;
