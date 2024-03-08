@@ -315,41 +315,36 @@ def get_order_executed(time_offset: int,
         else:
             out_list.append_list(out_a)
     except Exception as ex:
-        print(f'EXCEPTION in cboe_pitch.get_add_order_expanded(): {ex}')
+        print(f'EXCEPTION in cboe_pitch.get_order_executed(): {ex}')
         sys.stdout.flush()
         return 1
     return 0
 
 @sv(time_offset=DataType.Int,
     order_id=DataType.String,
-    side_indicator=DataType.String,
-    quantity=DataType.Int,
-    symbol=DataType.String,
-    price=DataType,
+    executed_quantity=DataType.Int,
+    remaining_quantity=DataType.Int,
+    execution_id=DataType.String,
+    price=DataType.Float,
     out_list=MyList,
     prepend=DataType.Bit,
     return_type=DataType.Int)
 def get_order_executed_at_price_size(time_offset: int,
                        order_id: str,
-                       side_indicator: str,
-                       quantity: int,
-                       symbol: str,
+                       executed_quantity: int,
+                       remaining_quantity: int,
+                       execution_id: str,
                        price: float,
-                       customer_indicator: str,
-                       participant_id: str,
                        out_list: MyList,
                        prepend: bool = False) -> int:
     try:
-
         parms = {
             "Time Offset": time_offset,
             "Order Id": order_id,
-            "Side Indicator": side_indicator,
-            "Quantity": quantity,
-            "Symbol": symbol,
+            "Executed Quantity": executed_quantity,
+            "Remaining Quantity": remaining_quantity,
+            "Execution Id": execution_id,
             "Price": price,
-            "Customer Indicator": customer_indicator,
-            "Participant Id": participant_id
         }
 
         out_a = cboe_pitch.get_order_executed(json.dumps(parms))
@@ -358,10 +353,290 @@ def get_order_executed_at_price_size(time_offset: int,
         else:
             out_list.append_list(out_a)
     except Exception as ex:
-        print(f'EXCEPTION in cboe_pitch.get_add_order_expanded(): {ex}')
+        print(f'EXCEPTION in cboe_pitch.get_order_executed_at_price_size(): {ex}')
         sys.stdout.flush()
         return 1
     return 0
+
+
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    canceled_quantity=DataType.Int,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_reduce_size_long(time_offset: int,
+                       order_id: str,
+                       canceled_quantity: int,
+                       out_list: MyList,
+                       prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+            "Canceled Quantity": canceled_quantity,
+        }
+
+        out_a = cboe_pitch.get_reduce_size_long(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_reduce_size_long(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
+
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    canceled_quantity=DataType.Int,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_reduce_size_short(time_offset: int,
+                       order_id: str,
+                       canceled_quantity: int,
+                       out_list: MyList,
+                       prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+            "Canceled Quantity": canceled_quantity,
+        }
+
+        out_a = cboe_pitch.get_reduce_size_short(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_reduce_size_short(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
+
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    quantity=DataType.Int,
+    price=DataType.Float,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_modify_order_long(time_offset: int,
+                          order_id: str,
+                          quantity: int,
+                          price: float,
+                          out_list: MyList,
+                          prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+            "Quantity": quantity,
+            "Price": price,
+        }
+
+        out_a = cboe_pitch.get_modify_order_long(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_modify_order_long(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
+
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    quantity=DataType.Int,
+    price=DataType.Float,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_modify_order_short(time_offset: int,
+                           order_id: str,
+                           quantity: int,
+                           price: float,
+                           out_list: MyList,
+                           prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+            "Quantity": quantity,
+            "Price": price,
+        }
+
+        out_a = cboe_pitch.get_modify_order_short(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_modify_order_short(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
+
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_delete_order(time_offset: int,
+                     order_id: str,
+                     out_list: MyList,
+                     prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+        }
+
+        out_a = cboe_pitch.get_delete_order(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_delete_order(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
+
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    side_indicator=DataType.String,
+    quantity=DataType.Int,
+    symbol=DataType.String,
+    price=DataType.Float,
+    execution_id=DataType.String,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_trade_long(time_offset: int,
+                   order_id: str,
+                   side_indicator: str,
+                   quantity: int,
+                   symbol: str,
+                   price: float,
+                   execution_id: str,
+                   out_list: MyList,
+                   prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+            "Side Indicator": side_indicator,
+            "Quantity": quantity,
+            "Symbol": symbol,
+            "Price": price,
+            "Execution Id": execution_id,
+        }
+
+        out_a = cboe_pitch.get_trade_long(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_delete_order(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
+
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    side_indicator=DataType.String,
+    quantity=DataType.Int,
+    symbol=DataType.String,
+    price=DataType.Float,
+    execution_id=DataType.String,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_trade_short(time_offset: int,
+                    order_id: str,
+                    side_indicator: str,
+                    quantity: int,
+                    symbol: str,
+                    price: float,
+                    execution_id: str,
+                    out_list: MyList,
+                    prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+            "Side Indicator": side_indicator,
+            "Quantity": quantity,
+            "Symbol": symbol,
+            "Price": price,
+            "Execution Id": execution_id,
+        }
+
+        out_a = cboe_pitch.get_trade_short(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_trade_short(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
+
+@sv(time_offset=DataType.Int,
+    order_id=DataType.String,
+    side_indicator=DataType.String,
+    quantity=DataType.Int,
+    symbol=DataType.String,
+    price=DataType.Float,
+    execution_id=DataType.String,
+    out_list=MyList,
+    prepend=DataType.Bit,
+    return_type=DataType.Int)
+def get_trade_expanded(time_offset: int,
+                       order_id: str,
+                       side_indicator: str,
+                       quantity: int,
+                       symbol: str,
+                       price: float,
+                       execution_id: str,
+                       out_list: MyList,
+                       prepend: bool = False) -> int:
+    try:
+        parms = {
+            "Time Offset": time_offset,
+            "Order Id": order_id,
+            "Side Indicator": side_indicator,
+            "Quantity": quantity,
+            "Symbol": symbol,
+            "Price": price,
+            "Execution Id": execution_id,
+        }
+
+        out_a = cboe_pitch.get_trade_expanded(json.dumps(parms))
+        if prepend is True:
+            out_list.prepend_list(out_a)
+        else:
+            out_list.append_list(out_a)
+    except Exception as ex:
+        print(f'EXCEPTION in cboe_pitch.get_trade_expanded(): {ex}')
+        sys.stdout.flush()
+        return 1
+    return 0
+
 
 @sv(hdr_seq=DataType.Int,
     hdr_count=DataType.Int,
