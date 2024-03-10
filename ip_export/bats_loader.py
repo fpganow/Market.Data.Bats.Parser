@@ -535,7 +535,7 @@ def get_trade_long(time_offset: int,
         else:
             out_list.append_list(out_a)
     except Exception as ex:
-        print(f'EXCEPTION in cboe_pitch.get_delete_order(): {ex}')
+        print(f'EXCEPTION in cboe_pitch.get_trade_order(): {ex}')
         sys.stdout.flush()
         return 1
     return 0
