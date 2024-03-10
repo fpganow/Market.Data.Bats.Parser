@@ -11,23 +11,6 @@ from typing import Any, List
 
 import cboe_pitch
 
-#TODO: Implement the following functions
-#  [x]  get_seq_unit_hdr
-#  [x]  get_time
-#  [x] get_add_order_long
-#  [x] get_add_order_short
-#  [x] get_add_order_expanded
-#  [] get_order_executed
-#  [] get_order_executed_at_price_size
-#  [] get_reduce_size_long
-#  [] get_reduce_size_short
-#  [] get_modify_order_long
-#  [] get_modify_order_short
-#  [] get_delete_order
-#  [] get_trade_long
-#  [] get_trade_short
-#  [] get_trade_expanded
-
 
 ##############################################################################
 # Custom type for transferring list elements back to SystemVerilog
@@ -121,6 +104,10 @@ class MyList(object):
     @sv(return_type=DataType.Int)
     def to_array(self) -> int:
         return self._data
+
+    @sv(return_type=DataType.Int)
+    def to_bytearray(self) -> int:
+        return bytearray(self._data)
 
     @sv(no_x=DataType.Int,
             return_type=DataType.String)
@@ -347,7 +334,7 @@ def get_order_executed_at_price_size(time_offset: int,
             "Price": price,
         }
 
-        out_a = cboe_pitch.get_order_executed(json.dumps(parms))
+        out_a = cboe_pitch.get_order_executed_at_price_size(json.dumps(parms))
         if prepend is True:
             out_list.prepend_list(out_a)
         else:

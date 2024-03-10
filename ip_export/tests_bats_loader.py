@@ -1,4 +1,4 @@
-from hamcrest import assert_that, equal_to, has_length
+from hamcrest import assert_that, equal_to, has_length, instance_of
 from unittest import TestCase
 
 from bats_loader import (
@@ -12,6 +12,10 @@ from bats_loader import (
     get_delete_order,
     get_trade_long, get_trade_short, get_trade_expanded
 )
+from cboe_pitch.time import Time
+from cboe_pitch.add_order import AddOrderLong, AddOrderShort, AddOrderExpanded
+from cboe_pitch.order_executed import OrderExecuted, OrderExecutedAtPriceSize
+from cboe_pitch.message_factory import MessageFactory
 
 
 def dump_bytes(msg_bytes):
@@ -258,6 +262,11 @@ class TestTime(TestCase):
         assert_that(my_list.get_length(), equal_to(6))
         assert_that(my_list.to_str(no_x=True), equal_to("[06 20 98 85 00 00]"))
 
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(Time))
+        assert_that(parsed_msg.time(), equal_to(34_200))
+
 
 class TestAddOrder(TestCase):
     def test_get_add_order_long_create(self):
@@ -289,6 +298,16 @@ class TestAddOrder(TestCase):
             0x20, 0x5a, 0x23,  0x0,  0x0,  0x0,  0x0,  0x0, 
             0x0, 0x1]))
 
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(AddOrderLong))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.side(), equal_to("B"))
+        assert_that(parsed_msg.quantity(), equal_to(95_000))
+        assert_that(parsed_msg.symbol(), equal_to("AAPL"))
+        assert_that(parsed_msg.price(), equal_to(0.905))
+
 
     def test_get_add_order_short_create(self):
         # GIVEN
@@ -318,6 +337,16 @@ class TestAddOrder(TestCase):
             0x4e, 0x41, 0x41, 0x50, 0x4c, 0x20, 0x20, 0xc3,
             0x00, 0x01
             ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(AddOrderShort))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.side(), equal_to("B"))
+        assert_that(parsed_msg.quantity(), equal_to(20_000))
+        assert_that(parsed_msg.symbol(), equal_to("AAPL"))
+        assert_that(parsed_msg.price(), equal_to(1.95))
 
 
     def test_get_add_order_expanded_create(self):
@@ -355,6 +384,16 @@ class TestAddOrder(TestCase):
             0x43,
         ]))
 
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(AddOrderExpanded))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.side(), equal_to("B"))
+        assert_that(parsed_msg.quantity(), equal_to(95_000))
+        assert_that(parsed_msg.symbol(), equal_to("AAPL"))
+        assert_that(parsed_msg.price(), equal_to(0.905))
+
 
 class TestOrderExecuted(TestCase):
     def test_order_executed_create(self):
@@ -381,6 +420,15 @@ class TestOrderExecuted(TestCase):
             0x01, 0x00, 0x45, 0x58, 0x45, 0x49, 0x30, 0x30,
             0x30, 0x31]))
 
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(OrderExecuted))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.executed_quantity(), equal_to(95_000))
+        assert_that(parsed_msg.execution_id(), equal_to("EXEI0001"))
+
+
     def test_order_executed_at_price_size_create(self):
         # GIVEN
         time_offset = 44_000
@@ -402,13 +450,21 @@ class TestOrderExecuted(TestCase):
                                                      out_list=my_list)
 
         # THEN
-        dump_bytes(my_list.to_array())
+        dump_bytes(my_list.to_bytearray())
         assert_that(my_list.get_length(), equal_to(26))
         assert_that(my_list.to_array(), equal_to([
             0x1a, 0x23, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
             0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x32, 0x00,
             0x00, 0x00, 0x45, 0x58, 0x45, 0x49, 0x30, 0x30,
             0x30, 0x31]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(OrderExecutedAtPriceSize))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.executed_quantity(), equal_to(95_000))
+        assert_that(parsed_msg.execution_id(), equal_to("EXEI0001"))
 
 
 class TestReduceSize(TestCase):
@@ -427,7 +483,7 @@ class TestReduceSize(TestCase):
                                          out_list=my_list)
 
         # THEN
-        dump_bytes(my_list.to_array())
+        dump_bytes(my_list.to_bytearray())
         assert_that(my_list.get_length(), equal_to(26))
         assert_that(my_list.to_array(), equal_to([
             0x1a, 0x23, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
@@ -450,7 +506,7 @@ class TestReduceSize(TestCase):
                                           out_list=my_list)
 
         # THEN
-        dump_bytes(my_list.to_array())
+        dump_bytes(my_list.to_bytearray())
         assert_that(my_list.get_length(), equal_to(26))
         assert_that(my_list.to_array(), equal_to([
             0x1a, 0x23, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
