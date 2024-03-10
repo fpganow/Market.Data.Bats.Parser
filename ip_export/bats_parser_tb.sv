@@ -4,22 +4,11 @@
 import pysv::*;
 
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
 // 
 // Create Date: 03/16/2021 09:23:26 PM
-// Design Name: 
 // Module Name: bats_parser_tb
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
 // Description: 
 // 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -116,9 +105,6 @@ module bats_parser_tb();
     );
     // AUTO_GENERATED_CODE_END: parse.py
 
-    integer fptr;
-    integer scan_faults;
-
     initial
     begin
         MyList my_list;
@@ -135,6 +121,7 @@ module bats_parser_tb();
         //   data_in
         //   data_valid
         reset = 0;
+        in_ip_reset = 0;
         in_ip_ready_for_orderbook_command = 1;
         in_ip_ready_for_debug = 1;
         in_ip_data_valid = 0;

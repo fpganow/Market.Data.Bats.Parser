@@ -1,7 +1,35 @@
-from hamcrest import assert_that, equal_to, has_length
+from hamcrest import assert_that, equal_to, has_length, instance_of
 from unittest import TestCase
 
-from bats_loader import MyList, get_time, get_seq_unit_hdr
+from bats_loader import (
+    MyList,
+    get_seq_unit_hdr,
+    get_time,
+    get_add_order_long, get_add_order_short, get_add_order_expanded,
+    get_order_executed, get_order_executed_at_price_size,
+    get_reduce_size_long, get_reduce_size_short,
+    get_modify_order_long, get_modify_order_short,
+    get_delete_order,
+    get_trade_long, get_trade_short, get_trade_expanded
+)
+
+from cboe_pitch.message_factory import MessageFactory
+from cboe_pitch.time import Time
+from cboe_pitch.add_order import AddOrderLong, AddOrderShort, AddOrderExpanded
+from cboe_pitch.order_executed import OrderExecuted, OrderExecutedAtPriceSize
+from cboe_pitch.reduce_size import ReduceSizeLong, ReduceSizeShort
+from cboe_pitch.modify import ModifyOrderLong, ModifyOrderShort
+from cboe_pitch.delete_order import DeleteOrder
+from cboe_pitch.trade import TradeLong, TradeShort, TradeExpanded
+
+def dump_bytes(msg_bytes):
+    bytes_copy = msg_bytes.copy()
+    slick = None
+    while len(bytes_copy) > 0:
+        slick = bytes_copy[0:8]
+        line_str = ', '.join([f'{x:#04x}' for x in slick])
+        print(f'\t{line_str}, ')
+        bytes_copy = bytes_copy[8:]
 
 
 class TestMyList(TestCase):
@@ -237,6 +265,507 @@ class TestTime(TestCase):
         # THEN
         assert_that(my_list.get_length(), equal_to(6))
         assert_that(my_list.to_str(no_x=True), equal_to("[06 20 98 85 00 00]"))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(Time))
+        assert_that(parsed_msg.time(), equal_to(34_200))
+
+
+class TestAddOrder(TestCase):
+    def test_get_add_order_long_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        side_indicator = "B"
+        quantity = 95_000
+        symbol = "AAPL"
+        price = 0.905
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_add_order_long(time_offset=time_offset,
+                                       order_id=order_id,
+                                       side_indicator=side_indicator,
+                                       quantity=quantity,
+                                       symbol=symbol,
+                                       price=price,
+                                       out_list=my_list)
+
+        # THEN
+        assert_that(my_list.get_length(), equal_to(34))
+        assert_that(my_list.to_array(), equal_to([
+            0x22, 0x21, 0xe0, 0xab,  0x0,  0x0, 0x4f, 0x52, 
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x42, 0x18,
+            0x73,  0x1,  0x0, 0x41, 0x41, 0x50, 0x4c, 0x20,
+            0x20, 0x5a, 0x23,  0x0,  0x0,  0x0,  0x0,  0x0, 
+            0x0, 0x1]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(AddOrderLong))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.side(), equal_to("B"))
+        assert_that(parsed_msg.quantity(), equal_to(95_000))
+        assert_that(parsed_msg.symbol(), equal_to("AAPL"))
+        assert_that(parsed_msg.price(), equal_to(0.905))
+
+
+    def test_get_add_order_short_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        side_indicator = "B"
+        quantity = 20_000
+        symbol = "AAPL"
+        price = 1.95
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_add_order_short(time_offset=time_offset,
+                                       order_id=order_id,
+                                       side_indicator=side_indicator,
+                                       quantity=quantity,
+                                       symbol=symbol,
+                                       price=price,
+                                       out_list=my_list)
+
+        # THEN
+        assert_that(my_list.get_length(), equal_to(26))
+        assert_that(my_list.to_array(), equal_to([
+            0x1a, 0x22, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x42, 0x20,
+            0x4e, 0x41, 0x41, 0x50, 0x4c, 0x20, 0x20, 0xc3,
+            0x00, 0x01
+            ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(AddOrderShort))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.side(), equal_to("B"))
+        assert_that(parsed_msg.quantity(), equal_to(20_000))
+        assert_that(parsed_msg.symbol(), equal_to("AAPL"))
+        assert_that(parsed_msg.price(), equal_to(1.95))
+
+
+    def test_get_add_order_expanded_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        side_indicator = "B"
+        quantity = 95_000
+        symbol = "AAPL"
+        price = 0.905
+        customer_indicator = "C"
+        participant_id = "MPID"
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_add_order_expanded(time_offset=time_offset,
+                                       order_id=order_id,
+                                       side_indicator=side_indicator,
+                                       quantity=quantity,
+                                       symbol=symbol,
+                                       price=price,
+                                       customer_indicator=customer_indicator,
+                                       participant_id=participant_id,
+                                       out_list=my_list)
+
+        # THEN
+        assert_that(my_list.get_length(), equal_to(41))
+        assert_that(my_list.to_array(), equal_to([
+            0x29, 0x2f, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x42, 0x18,
+            0x73, 0x01, 0x00, 0x41, 0x41, 0x50, 0x4c, 0x20,
+            0x20, 0x20, 0x20, 0x5a, 0x23, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x01, 0x4d, 0x50, 0x49, 0x44,
+            0x43,
+        ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(AddOrderExpanded))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.side(), equal_to("B"))
+        assert_that(parsed_msg.quantity(), equal_to(95_000))
+        assert_that(parsed_msg.symbol(), equal_to("AAPL"))
+        assert_that(parsed_msg.price(), equal_to(0.905))
+
+
+class TestOrderExecuted(TestCase):
+    def test_order_executed_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        executed_quantity = 95_000
+        execution_id = "EXEI0001"
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_order_executed(time_offset=time_offset,
+                                       order_id=order_id,
+                                       executed_quantity=executed_quantity,
+                                       execution_id=execution_id,
+                                       out_list=my_list)
+
+        # THEN
+        assert_that(my_list.get_length(), equal_to(26))
+        dump_bytes(my_list.to_bytearray())
+        assert_that(my_list.to_array(), equal_to([
+            0x1a, 0x23, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x18, 0x73,
+            0x01, 0x00, 0x45, 0x58, 0x45, 0x49, 0x30, 0x30,
+            0x30, 0x31,
+            ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(OrderExecuted))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.executed_quantity(), equal_to(95_000))
+        assert_that(parsed_msg.execution_id(), equal_to("EXEI0001"))
+
+
+    def test_order_executed_at_price_size_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        executed_quantity = 50
+        remaining_quantity = 150
+        price = 95.09
+        execution_id = "EXEI0001"
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_order_executed_at_price_size(time_offset=time_offset,
+                                                     order_id=order_id,
+                                                     executed_quantity=executed_quantity,
+                                                     remaining_quantity=remaining_quantity,
+                                                     execution_id=execution_id,
+                                                     price=price,
+                                                     out_list=my_list)
+
+        # THEN
+        assert_that(my_list.get_length(), equal_to(38))
+        assert_that(my_list.to_array(), equal_to([
+            0x26, 0x24, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x32, 0x00,
+            0x00, 0x00, 0x96, 0x00, 0x00, 0x00, 0x45, 0x58,
+            0x45, 0x49, 0x30, 0x30, 0x30, 0x31, 0x74, 0x82,
+            0x0e, 0x00, 0x00, 0x00, 0x00, 0x00,
+            ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(OrderExecutedAtPriceSize))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.executed_quantity(), equal_to(50))
+        assert_that(parsed_msg.execution_id(), equal_to("EXEI0001"))
+
+
+class TestReduceSize(TestCase):
+    def test_reduce_size_long_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0012"
+        canceled_quantity = 50
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_reduce_size_long(time_offset=time_offset,
+                                         order_id=order_id,
+                                         canceled_quantity=canceled_quantity,
+                                         out_list=my_list)
+
+        # THEN
+        dump_bytes(my_list.to_bytearray())
+        assert_that(my_list.get_length(), equal_to(18))
+        assert_that(my_list.to_array(), equal_to([
+            0x12, 0x25, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x31, 0x32, 0x32, 0x00,
+            0x00, 0x00,
+            ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(ReduceSizeLong))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0012"))
+        assert_that(parsed_msg.canceled_quantity(), equal_to(50))
+
+    def test_reduce_size_short_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0011"
+        canceled_quantity = 150
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_reduce_size_short(time_offset=time_offset,
+                                          order_id=order_id,
+                                          canceled_quantity=canceled_quantity,
+                                          out_list=my_list)
+
+        # THEN
+        dump_bytes(my_list.to_bytearray())
+        assert_that(my_list.get_length(), equal_to(16))
+        assert_that(my_list.to_array(), equal_to([
+            0x10, 0x26, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x31, 0x31, 0x96, 0x00,
+            ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(ReduceSizeShort))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0011"))
+        assert_that(parsed_msg.canceled_quantity(), equal_to(150))
+
+
+class TestModifyOrder(TestCase):
+    def test_modify_order_long_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        quantity = 150
+        price = 150.25
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_modify_order_long(time_offset=time_offset,
+                                          order_id=order_id,
+                                          quantity=quantity,
+                                          price=price,
+                                          out_list=my_list)
+
+        # THEN
+        dump_bytes(my_list.to_bytearray())
+        assert_that(my_list.get_length(), equal_to(27))
+        assert_that(my_list.to_array(), equal_to([
+            0x1b, 0x27, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x96, 0x00,
+            0x00, 0x00, 0x24, 0xed, 0x16, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x01,
+            ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(ModifyOrderLong))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.quantity(), equal_to(150))
+        assert_that(parsed_msg.price(), equal_to(150.25))
+
+
+    def test_modify_order_short_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        quantity = 150
+        price = 150.25
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_modify_order_short(time_offset=time_offset,
+                                          order_id=order_id,
+                                          quantity=quantity,
+                                          price=price,
+                                          out_list=my_list)
+
+        # THEN
+        dump_bytes(my_list.to_bytearray())
+        assert_that(my_list.get_length(), equal_to(19))
+        assert_that(my_list.to_array(), equal_to([
+            0x13, 0x28, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x96, 0x00,
+            0xb1, 0x3a, 0x01,
+            ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(ModifyOrderShort))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.quantity(), equal_to(150))
+        assert_that(parsed_msg.price(), equal_to(150.25))
+
+
+class TestDeleteOrder(TestCase):
+    def test_delete_order_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_delete_order(time_offset=time_offset,
+                                     order_id=order_id,
+                                     out_list=my_list)
+
+        # THEN
+        dump_bytes(my_list.to_bytearray())
+        assert_that(my_list.get_length(), equal_to(14))
+        assert_that(my_list.to_array(), equal_to([
+            0x0e, 0x29, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31,
+            ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(DeleteOrder))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+
+
+class TestTrade(TestCase):
+    def test_trade_long_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        side_indicator = "B"
+        quantity = 150
+        symbol = "AAPL"
+        price = 0.905
+        execution_id = "EXEI0001"
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_trade_long(time_offset=time_offset,
+                                     order_id=order_id,
+                                     side_indicator=side_indicator,
+                                     quantity=quantity,
+                                     symbol=symbol,
+                                     price=price,
+                                     execution_id=execution_id,
+                                     out_list=my_list)
+
+        # THEN
+        dump_bytes(my_list.to_array())
+        assert_that(my_list.get_length(), equal_to(41))
+        assert_that(my_list.to_array(), equal_to([
+            0x29, 0x2a, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x42, 0x96,
+            0x00, 0x00, 0x00, 0x41, 0x41, 0x50, 0x4c, 0x20,
+            0x20, 0x5a, 0x23, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x45, 0x58, 0x45, 0x49, 0x30, 0x30, 0x30,
+            0x31,
+            ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(TradeLong))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.side(), equal_to("B"))
+        assert_that(parsed_msg.quantity(), equal_to(150))
+        assert_that(parsed_msg.symbol(), equal_to("AAPL"))
+        assert_that(parsed_msg.price(), equal_to(0.905))
+        assert_that(parsed_msg.execution_id(), equal_to("EXEI0001"))
+
+    def test_trade_short_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        side_indicator = "B"
+        quantity = 150
+        symbol = "AAPL"
+        price = 0.90
+        execution_id = "EXEI0001"
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_trade_short(time_offset=time_offset,
+                                    order_id=order_id,
+                                    side_indicator=side_indicator,
+                                    quantity=quantity,
+                                    symbol=symbol,
+                                    price=price,
+                                    execution_id=execution_id,
+                                    out_list=my_list)
+
+        # THEN
+        dump_bytes(my_list.to_array())
+        assert_that(my_list.get_length(), equal_to(33))
+        assert_that(my_list.to_array(), equal_to([
+            0x21, 0x2b, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x42, 0x96,
+            0x00, 0x41, 0x41, 0x50, 0x4c, 0x20, 0x20, 0x5a,
+            0x00, 0x45, 0x58, 0x45, 0x49, 0x30, 0x30, 0x30,
+            0x31]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(TradeShort))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.side(), equal_to("B"))
+        assert_that(parsed_msg.quantity(), equal_to(150))
+        assert_that(parsed_msg.symbol(), equal_to("AAPL"))
+        assert_that(parsed_msg.price(), equal_to(0.90))
+        assert_that(parsed_msg.execution_id(), equal_to("EXEI0001"))
+
+
+    def test_trade_expanded_create(self):
+        # GIVEN
+        time_offset = 44_000
+        order_id = "ORID0001"
+        side_indicator = "B"
+        quantity = 150
+        symbol = "AAPL"
+        price = 0.905
+        execution_id = "EXEI0001"
+
+        my_list = MyList()
+
+        # WHEN
+        msg_bytes = get_trade_expanded(time_offset=time_offset,
+                                       order_id=order_id,
+                                       side_indicator=side_indicator,
+                                       quantity=quantity,
+                                       symbol=symbol,
+                                       price=price,
+                                       execution_id=execution_id,
+                                       out_list=my_list)
+
+        # THEN
+        assert_that(my_list.get_length(), equal_to(43))
+        assert_that(my_list.to_array(), equal_to([
+            0x2b, 0x30, 0xe0, 0xab, 0x00, 0x00, 0x4f, 0x52,
+            0x49, 0x44, 0x30, 0x30, 0x30, 0x31, 0x42, 0x96,
+            0x00, 0x00, 0x00, 0x41, 0x41, 0x50, 0x4c, 0x20,
+            0x20, 0x20, 0x20, 0x5a, 0x23, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x45, 0x58, 0x45, 0x49, 0x30,
+            0x30, 0x30, 0x31,
+            ]))
+
+        # AGAIN
+        parsed_msg = MessageFactory.from_bytes(my_list.to_bytearray())
+        assert_that(parsed_msg, instance_of(TradeExpanded))
+        assert_that(parsed_msg.time_offset(), equal_to(44_000))
+        assert_that(parsed_msg.order_id(), equal_to("ORID0001"))
+        assert_that(parsed_msg.side(), equal_to("B"))
+        assert_that(parsed_msg.quantity(), equal_to(150))
+        assert_that(parsed_msg.symbol(), equal_to("AAPL"))
+        assert_that(parsed_msg.price(), equal_to(0.905))
+        assert_that(parsed_msg.execution_id(), equal_to("EXEI0001"))
 
 
 class TestSeqUnitHdr(TestCase):
