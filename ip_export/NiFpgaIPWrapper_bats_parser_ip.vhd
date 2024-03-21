@@ -12,24 +12,28 @@
 -- ctrlind_02_Debug_Element : Top level indicator "Debug.Element", sync to Clk40, u64
 -- ctrlind_03_Ready_for_OrderBook_Command : Top level control "Ready.for.OrderBook.Command", sync to Clk40, bool
 -- ctrlind_04_OrderBook_Command_Valid : Top level indicator "OrderBook.Command.Valid", sync to Clk40, bool
--- ctrlind_05_Nanoseconds_U64 : Top level indicator "Nanoseconds (U64)", sync to Clk40, u64
--- ctrlind_06_Seconds_U64 : Top level indicator "Seconds (U64)", sync to Clk40, u64
--- ctrlind_07_Remaining_Quantity_U32 : Top level indicator "Remaining Quantity (U32)", sync to Clk40, u32
--- ctrlind_08_Canceled_Quantity_U32 : Top level indicator "Canceled Quantity (U32)", sync to Clk40, u32
--- ctrlind_09_Executed_Quantity_U32 : Top level indicator "Executed Quantity (U32)", sync to Clk40, u32
--- ctrlind_10_Price_U64 : Top level indicator "Price (U64)", sync to Clk40, u64
--- ctrlind_11_Symbol_U64 : Top level indicator "Symbol (U64)", sync to Clk40, u64
--- ctrlind_12_Quantity_U32 : Top level indicator "Quantity (U32)", sync to Clk40, u32
--- ctrlind_13_Order_Id_U64 : Top level indicator "Order Id (U64)", sync to Clk40, u64
--- ctrlind_14_Side_U8 : Top level indicator "Side (U8)", sync to Clk40, u8
--- ctrlind_15_OrderBook_Command_Type : Top level indicator "OrderBook Command.Type", sync to Clk40, enum8
--- ctrlind_16_reset : Top level control "reset", sync to Clk40, bool
--- ctrlind_17_Bytes : Top level control "Bytes", sync to Clk40, array
--- ctrlind_18_Byte_Enables : Top level control "Byte.Enables", sync to Clk40, array
--- ctrlind_19_data_valid : Top level control "data.valid", sync to Clk40, bool
--- ctrlind_20_Ready_for_Udp_Input : Top level indicator "Ready.for.Udp.Input", sync to Clk40, bool
--- ctrlind_21_Bytes_echo : Top level indicator "Bytes.echo", sync to Clk40, u64
--- ctrlind_22_Bytes_Valid : Top level indicator "Bytes.Valid", sync to Clk40, u8
+-- ctrlind_05_seq_no : Top level indicator "seq no", sync to Clk40, u32
+-- ctrlind_06_Remove : Top level indicator "Remove", sync to Clk40, bool
+-- ctrlind_07_Edit : Top level indicator "Edit", sync to Clk40, bool
+-- ctrlind_08_Add : Top level indicator "Add", sync to Clk40, bool
+-- ctrlind_09_Nanoseconds_U64 : Top level indicator "Nanoseconds (U64)", sync to Clk40, u64
+-- ctrlind_10_Seconds_U64 : Top level indicator "Seconds (U64)", sync to Clk40, u64
+-- ctrlind_11_Remaining_Quantity_U32 : Top level indicator "Remaining Quantity (U32)", sync to Clk40, u32
+-- ctrlind_12_Canceled_Quantity_U32 : Top level indicator "Canceled Quantity (U32)", sync to Clk40, u32
+-- ctrlind_13_Executed_Quantity_U32 : Top level indicator "Executed Quantity (U32)", sync to Clk40, u32
+-- ctrlind_14_Price_U64 : Top level indicator "Price (U64)", sync to Clk40, u64
+-- ctrlind_15_Symbol_U64 : Top level indicator "Symbol (U64)", sync to Clk40, u64
+-- ctrlind_16_Quantity_U32 : Top level indicator "Quantity (U32)", sync to Clk40, u32
+-- ctrlind_17_Order_Id_U64 : Top level indicator "Order Id (U64)", sync to Clk40, u64
+-- ctrlind_18_Side_U8 : Top level indicator "Side (U8)", sync to Clk40, u8
+-- ctrlind_19_OrderBook_Command_Type : Top level indicator "OrderBook Command.Type", sync to Clk40, enum8
+-- ctrlind_20_reset : Top level control "reset", sync to Clk40, bool
+-- ctrlind_21_Bytes : Top level control "Bytes", sync to Clk40, array
+-- ctrlind_22_Byte_Enables : Top level control "Byte.Enables", sync to Clk40, array
+-- ctrlind_23_data_valid : Top level control "data.valid", sync to Clk40, bool
+-- ctrlind_24_Ready_for_Udp_Input : Top level indicator "Ready.for.Udp.Input", sync to Clk40, bool
+-- ctrlind_25_Bytes_echo : Top level indicator "Bytes.echo", sync to Clk40, u64
+-- ctrlind_26_Bytes_Valid : Top level indicator "Bytes.Valid", sync to Clk40, u8
 -- Clk40 : Clock "40 MHz Onboard Clock", nominal frequency 40.00 MHz, base clock
 
 library ieee;
@@ -46,24 +50,28 @@ entity NiFpgaIPWrapper_bats_parser_ip is
 			ctrlind_02_Debug_Element : out std_logic_vector(63 downto 0);
 			ctrlind_03_Ready_for_OrderBook_Command : in std_logic_vector(0 downto 0);
 			ctrlind_04_OrderBook_Command_Valid : out std_logic_vector(0 downto 0);
-			ctrlind_05_Nanoseconds_U64 : out std_logic_vector(63 downto 0);
-			ctrlind_06_Seconds_U64 : out std_logic_vector(63 downto 0);
-			ctrlind_07_Remaining_Quantity_U32 : out std_logic_vector(31 downto 0);
-			ctrlind_08_Canceled_Quantity_U32 : out std_logic_vector(31 downto 0);
-			ctrlind_09_Executed_Quantity_U32 : out std_logic_vector(31 downto 0);
-			ctrlind_10_Price_U64 : out std_logic_vector(63 downto 0);
-			ctrlind_11_Symbol_U64 : out std_logic_vector(63 downto 0);
-			ctrlind_12_Quantity_U32 : out std_logic_vector(31 downto 0);
-			ctrlind_13_Order_Id_U64 : out std_logic_vector(63 downto 0);
-			ctrlind_14_Side_U8 : out std_logic_vector(7 downto 0);
-			ctrlind_15_OrderBook_Command_Type : out std_logic_vector(7 downto 0);
-			ctrlind_16_reset : in std_logic_vector(0 downto 0);
-			ctrlind_17_Bytes : in std_logic_vector(63 downto 0);
-			ctrlind_18_Byte_Enables : in std_logic_vector(7 downto 0);
-			ctrlind_19_data_valid : in std_logic_vector(0 downto 0);
-			ctrlind_20_Ready_for_Udp_Input : out std_logic_vector(0 downto 0);
-			ctrlind_21_Bytes_echo : out std_logic_vector(63 downto 0);
-			ctrlind_22_Bytes_Valid : out std_logic_vector(7 downto 0);
+			ctrlind_05_seq_no : out std_logic_vector(31 downto 0);
+			ctrlind_06_Remove : out std_logic_vector(0 downto 0);
+			ctrlind_07_Edit : out std_logic_vector(0 downto 0);
+			ctrlind_08_Add : out std_logic_vector(0 downto 0);
+			ctrlind_09_Nanoseconds_U64 : out std_logic_vector(63 downto 0);
+			ctrlind_10_Seconds_U64 : out std_logic_vector(63 downto 0);
+			ctrlind_11_Remaining_Quantity_U32 : out std_logic_vector(31 downto 0);
+			ctrlind_12_Canceled_Quantity_U32 : out std_logic_vector(31 downto 0);
+			ctrlind_13_Executed_Quantity_U32 : out std_logic_vector(31 downto 0);
+			ctrlind_14_Price_U64 : out std_logic_vector(63 downto 0);
+			ctrlind_15_Symbol_U64 : out std_logic_vector(63 downto 0);
+			ctrlind_16_Quantity_U32 : out std_logic_vector(31 downto 0);
+			ctrlind_17_Order_Id_U64 : out std_logic_vector(63 downto 0);
+			ctrlind_18_Side_U8 : out std_logic_vector(7 downto 0);
+			ctrlind_19_OrderBook_Command_Type : out std_logic_vector(7 downto 0);
+			ctrlind_20_reset : in std_logic_vector(0 downto 0);
+			ctrlind_21_Bytes : in std_logic_vector(63 downto 0);
+			ctrlind_22_Byte_Enables : in std_logic_vector(7 downto 0);
+			ctrlind_23_data_valid : in std_logic_vector(0 downto 0);
+			ctrlind_24_Ready_for_Udp_Input : out std_logic_vector(0 downto 0);
+			ctrlind_25_Bytes_echo : out std_logic_vector(63 downto 0);
+			ctrlind_26_Bytes_Valid : out std_logic_vector(7 downto 0);
 			Clk40 : in std_logic
 		);
 end NiFpgaIPWrapper_bats_parser_ip;
@@ -81,24 +89,28 @@ architecture vhdl_labview of NiFpgaIPWrapper_bats_parser_ip is
 			ctrlind_02_Debug_Element : out std_logic_vector(63 downto 0);
 			ctrlind_03_Ready_for_OrderBook_Command : in std_logic_vector(0 downto 0);
 			ctrlind_04_OrderBook_Command_Valid : out std_logic_vector(0 downto 0);
-			ctrlind_05_Nanoseconds_U64 : out std_logic_vector(63 downto 0);
-			ctrlind_06_Seconds_U64 : out std_logic_vector(63 downto 0);
-			ctrlind_07_Remaining_Quantity_U32 : out std_logic_vector(31 downto 0);
-			ctrlind_08_Canceled_Quantity_U32 : out std_logic_vector(31 downto 0);
-			ctrlind_09_Executed_Quantity_U32 : out std_logic_vector(31 downto 0);
-			ctrlind_10_Price_U64 : out std_logic_vector(63 downto 0);
-			ctrlind_11_Symbol_U64 : out std_logic_vector(63 downto 0);
-			ctrlind_12_Quantity_U32 : out std_logic_vector(31 downto 0);
-			ctrlind_13_Order_Id_U64 : out std_logic_vector(63 downto 0);
-			ctrlind_14_Side_U8 : out std_logic_vector(7 downto 0);
-			ctrlind_15_OrderBook_Command_Type : out std_logic_vector(7 downto 0);
-			ctrlind_16_reset : in std_logic_vector(0 downto 0);
-			ctrlind_17_Bytes : in std_logic_vector(63 downto 0);
-			ctrlind_18_Byte_Enables : in std_logic_vector(7 downto 0);
-			ctrlind_19_data_valid : in std_logic_vector(0 downto 0);
-			ctrlind_20_Ready_for_Udp_Input : out std_logic_vector(0 downto 0);
-			ctrlind_21_Bytes_echo : out std_logic_vector(63 downto 0);
-			ctrlind_22_Bytes_Valid : out std_logic_vector(7 downto 0);
+			ctrlind_05_seq_no : out std_logic_vector(31 downto 0);
+			ctrlind_06_Remove : out std_logic_vector(0 downto 0);
+			ctrlind_07_Edit : out std_logic_vector(0 downto 0);
+			ctrlind_08_Add : out std_logic_vector(0 downto 0);
+			ctrlind_09_Nanoseconds_U64 : out std_logic_vector(63 downto 0);
+			ctrlind_10_Seconds_U64 : out std_logic_vector(63 downto 0);
+			ctrlind_11_Remaining_Quantity_U32 : out std_logic_vector(31 downto 0);
+			ctrlind_12_Canceled_Quantity_U32 : out std_logic_vector(31 downto 0);
+			ctrlind_13_Executed_Quantity_U32 : out std_logic_vector(31 downto 0);
+			ctrlind_14_Price_U64 : out std_logic_vector(63 downto 0);
+			ctrlind_15_Symbol_U64 : out std_logic_vector(63 downto 0);
+			ctrlind_16_Quantity_U32 : out std_logic_vector(31 downto 0);
+			ctrlind_17_Order_Id_U64 : out std_logic_vector(63 downto 0);
+			ctrlind_18_Side_U8 : out std_logic_vector(7 downto 0);
+			ctrlind_19_OrderBook_Command_Type : out std_logic_vector(7 downto 0);
+			ctrlind_20_reset : in std_logic_vector(0 downto 0);
+			ctrlind_21_Bytes : in std_logic_vector(63 downto 0);
+			ctrlind_22_Byte_Enables : in std_logic_vector(7 downto 0);
+			ctrlind_23_data_valid : in std_logic_vector(0 downto 0);
+			ctrlind_24_Ready_for_Udp_Input : out std_logic_vector(0 downto 0);
+			ctrlind_25_Bytes_echo : out std_logic_vector(63 downto 0);
+			ctrlind_26_Bytes_Valid : out std_logic_vector(7 downto 0);
 			Clk40 : in std_logic;
 			tDiagramEnableOut : in std_logic
 		);
@@ -116,24 +128,28 @@ begin
 			ctrlind_02_Debug_Element => ctrlind_02_Debug_Element,
 			ctrlind_03_Ready_for_OrderBook_Command => ctrlind_03_Ready_for_OrderBook_Command,
 			ctrlind_04_OrderBook_Command_Valid => ctrlind_04_OrderBook_Command_Valid,
-			ctrlind_05_Nanoseconds_U64 => ctrlind_05_Nanoseconds_U64,
-			ctrlind_06_Seconds_U64 => ctrlind_06_Seconds_U64,
-			ctrlind_07_Remaining_Quantity_U32 => ctrlind_07_Remaining_Quantity_U32,
-			ctrlind_08_Canceled_Quantity_U32 => ctrlind_08_Canceled_Quantity_U32,
-			ctrlind_09_Executed_Quantity_U32 => ctrlind_09_Executed_Quantity_U32,
-			ctrlind_10_Price_U64 => ctrlind_10_Price_U64,
-			ctrlind_11_Symbol_U64 => ctrlind_11_Symbol_U64,
-			ctrlind_12_Quantity_U32 => ctrlind_12_Quantity_U32,
-			ctrlind_13_Order_Id_U64 => ctrlind_13_Order_Id_U64,
-			ctrlind_14_Side_U8 => ctrlind_14_Side_U8,
-			ctrlind_15_OrderBook_Command_Type => ctrlind_15_OrderBook_Command_Type,
-			ctrlind_16_reset => ctrlind_16_reset,
-			ctrlind_17_Bytes => ctrlind_17_Bytes,
-			ctrlind_18_Byte_Enables => ctrlind_18_Byte_Enables,
-			ctrlind_19_data_valid => ctrlind_19_data_valid,
-			ctrlind_20_Ready_for_Udp_Input => ctrlind_20_Ready_for_Udp_Input,
-			ctrlind_21_Bytes_echo => ctrlind_21_Bytes_echo,
-			ctrlind_22_Bytes_Valid => ctrlind_22_Bytes_Valid,
+			ctrlind_05_seq_no => ctrlind_05_seq_no,
+			ctrlind_06_Remove => ctrlind_06_Remove,
+			ctrlind_07_Edit => ctrlind_07_Edit,
+			ctrlind_08_Add => ctrlind_08_Add,
+			ctrlind_09_Nanoseconds_U64 => ctrlind_09_Nanoseconds_U64,
+			ctrlind_10_Seconds_U64 => ctrlind_10_Seconds_U64,
+			ctrlind_11_Remaining_Quantity_U32 => ctrlind_11_Remaining_Quantity_U32,
+			ctrlind_12_Canceled_Quantity_U32 => ctrlind_12_Canceled_Quantity_U32,
+			ctrlind_13_Executed_Quantity_U32 => ctrlind_13_Executed_Quantity_U32,
+			ctrlind_14_Price_U64 => ctrlind_14_Price_U64,
+			ctrlind_15_Symbol_U64 => ctrlind_15_Symbol_U64,
+			ctrlind_16_Quantity_U32 => ctrlind_16_Quantity_U32,
+			ctrlind_17_Order_Id_U64 => ctrlind_17_Order_Id_U64,
+			ctrlind_18_Side_U8 => ctrlind_18_Side_U8,
+			ctrlind_19_OrderBook_Command_Type => ctrlind_19_OrderBook_Command_Type,
+			ctrlind_20_reset => ctrlind_20_reset,
+			ctrlind_21_Bytes => ctrlind_21_Bytes,
+			ctrlind_22_Byte_Enables => ctrlind_22_Byte_Enables,
+			ctrlind_23_data_valid => ctrlind_23_data_valid,
+			ctrlind_24_Ready_for_Udp_Input => ctrlind_24_Ready_for_Udp_Input,
+			ctrlind_25_Bytes_echo => ctrlind_25_Bytes_echo,
+			ctrlind_26_Bytes_Valid => ctrlind_26_Bytes_Valid,
 			Clk40 => Clk40,
 			tDiagramEnableOut => '1'
 		);
