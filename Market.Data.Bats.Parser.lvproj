@@ -130,6 +130,7 @@
 			<Item Name="create.messages.for.testing.vi" Type="VI" URL="../host/create.messages.for.testing.vi"/>
 			<Item Name="create.messages.from.params.vi" Type="VI" URL="../host/create.messages.from.params.vi"/>
 			<Item Name="Message.Spec.ctl" Type="VI" URL="../host/Message.Spec.ctl"/>
+			<Item Name="message.to.str.vi" Type="VI" URL="../host/message.to.str.vi"/>
 		</Item>
 		<Item Name="FPGA Target" Type="FPGA Target">
 			<Property Name="AutoRun" Type="Bool">false</Property>
@@ -1048,8 +1049,6 @@ set_property IOSTANDARD LVCMOS25 [get_ports {Si570Clkn}]
 					<Item Name="xsimkB15BA4892E5F4023A51AA2E61B6FD011.dll" Type="Document" URL="/&lt;instrlib&gt;/_niInstr/Basic Elements/v1/FPGA/Private/GlitchlessMux_4InputSimFiles/xsim.dir/FourInputGlitchFreeMuxBasicElements/xsimkB15BA4892E5F4023A51AA2E61B6FD011.dll"/>
 					<Item Name="niInstr IPv4 UDP Data Stream v1.lvclass" Type="LVClass" URL="/&lt;instrlib&gt;/_niInstr/Network/IPv4/UDP/Data Stream/v1/niInstr IPv4 UDP Data Stream v1.lvclass"/>
 				</Item>
-				<Item Name="fpganow.common.fpga.lvlib" Type="Library" URL="../../Market.Data.Common/fpga/fpganow.common.fpga.lvlib"/>
-				<Item Name="crc.test.case.ctl" Type="VI" URL="../../Market.Data.Filter/fpga/tests/crc.test.case.ctl"/>
 			</Item>
 			<Item Name="Build Specifications" Type="Build">
 				<Item Name="bats.parser.ip" Type="{F4C5E96F-7410-48A5-BB87-3559BC9B167F}">
